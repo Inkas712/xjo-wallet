@@ -1,0 +1,51 @@
+import { Transaction } from '@/types';
+
+export const mockTransactions: Transaction[] = [
+  {
+    id: '1',
+    type: 'received',
+    amount: 500.0,
+    currency: 'USD',
+    sender: 'John Smith',
+    date: new Date(Date.now() - 3600000).toISOString(),
+    status: 'completed',
+  },
+  {
+    id: '2',
+    type: 'sent',
+    amount: 125.5,
+    currency: 'USD',
+    recipient: '@sarah_m',
+    date: new Date(Date.now() - 86400000).toISOString(),
+    note: 'Dinner split',
+    status: 'completed',
+  },
+  {
+    id: '3',
+    type: 'sent',
+    amount: 0.015,
+    currency: 'BTC',
+    recipient: '0x1234...5678',
+    date: new Date(Date.now() - 172800000).toISOString(),
+    status: 'completed',
+  },
+  {
+    id: '4',
+    type: 'received',
+    amount: 1200.0,
+    currency: 'USDT',
+    sender: 'Exchange Transfer',
+    date: new Date(Date.now() - 259200000).toISOString(),
+    status: 'completed',
+  },
+  {
+    id: '5',
+    type: 'sent',
+    amount: 89.99,
+    currency: 'USD',
+    recipient: 'Subscription Service',
+    date: new Date(Date.now() - 345600000).toISOString(),
+    note: 'Monthly subscription',
+    status: 'completed',
+  },
+];
