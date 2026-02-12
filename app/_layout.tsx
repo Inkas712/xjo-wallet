@@ -5,6 +5,7 @@ import { StatusBar } from "expo-status-bar";
 import React, { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { WalletProvider } from "@/contexts/WalletContext";
 import Colors from "@/constants/colors";
 import { trpc, trpcClient } from "@/lib/trpc";
 
@@ -48,8 +49,10 @@ export default function RootLayout() {
       <QueryClientProvider client={queryClient}>
         <GestureHandlerRootView style={{ flex: 1 }}>
           <AuthProvider>
-            <StatusBar style="dark" />
-            <RootLayoutNav />
+            <WalletProvider>
+              <StatusBar style="dark" />
+              <RootLayoutNav />
+            </WalletProvider>
           </AuthProvider>
         </GestureHandlerRootView>
       </QueryClientProvider>

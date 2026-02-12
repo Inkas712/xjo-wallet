@@ -56,3 +56,26 @@ export interface ChartDataPoint {
   timestamp: number;
   value: number;
 }
+
+export type CurrencyCode = 'USD' | 'BTC' | 'ETH' | 'SOL' | 'USDT' | 'BNB';
+
+export interface WalletBalance {
+  currency: CurrencyCode;
+  amount: number;
+}
+
+export interface WalletState {
+  balances: WalletBalance[];
+  transactions: WalletTransaction[];
+}
+
+export interface WalletTransaction {
+  id: string;
+  type: 'sent' | 'received' | 'exchange';
+  amount: number;
+  currency: CurrencyCode;
+  counterparty?: string;
+  date: string;
+  status: 'completed' | 'pending' | 'failed';
+  note?: string;
+}

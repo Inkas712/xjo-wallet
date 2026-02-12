@@ -37,6 +37,7 @@ import {
 } from 'lucide-react-native';
 import Colors from '@/constants/colors';
 import { useAuth } from '@/contexts/AuthContext';
+import { useWallet, CURRENCY_INFO } from '@/contexts/WalletContext';
 import { mockTransactions } from '@/mocks/transactions';
 import { CryptoCompareAPI } from '@/services/crypto';
 
@@ -52,6 +53,7 @@ const CRYPTO_SYMBOLS = ['BTC', 'ETH', 'SOL', 'USDT', 'BNB'];
 export default function HomeScreen() {
   const router = useRouter();
   const { user } = useAuth();
+  const { totalBalanceUsd, balances, getUsdRate, transactions: walletTransactions } = useWallet();
   const queryClient = useQueryClient();
   
   const [balanceVisible, setBalanceVisible] = useState(true);
@@ -455,7 +457,7 @@ export default function HomeScreen() {
               </View>
               
               <Animated.Text style={[styles.balanceAmount, { opacity: fadeAnim }]}>
-                {formatCurrency(0)}
+                {formatCurrency(totalBalanceUsd)}
               </Animated.Text>
               
               <View style={styles.balanceChange}>
@@ -603,6 +605,45 @@ export default function HomeScreen() {
             </View>
           </View>
 
+          {balances.filter(b => b.amount > 0).length > 0 && (
+            <View style={styles.holdingsSection}>
+              <View style={styles.sectionHeader}>
+                <Text style={styles.sectionTitle}>Holdings</Text>
+              </View>
+              <View style={styles.holdingsList}>
+                {balances.filter(b => b.amount > 0).map((bal, index, arr) => {
+                  const info = CURRENCY_INFO[bal.currency];
+                  const usdVal = bal.amount * getUsdRate(bal.currency);
+                  return (
+                    <View
+                      key={bal.currency}
+                      style={[
+                        styles.holdingItem,
+                        index === arr.length - 1 && styles.holdingItemLast,
+                      ]}
+                    >
+                      <View style={styles.holdingLeft}>
+                        <Image source={{ uri: info.icon }} style={styles.holdingIcon} contentFit="contain" />
+                        <View>
+                          <Text style={styles.holdingName}>{info.name}</Text>
+                          <Text style={styles.holdingSymbol}>{bal.currency}</Text>
+                        </View>
+                      </View>
+                      <View style={styles.holdingRight}>
+                        <Text style={styles.holdingAmount}>
+                          {bal.currency === 'USD' ? `${bal.amount.toFixed(2)}` : bal.amount.toFixed(8)}
+                        </Text>
+                        {bal.currency !== 'USD' && (
+                          <Text style={styles.holdingUsd}>${usdVal.toFixed(2)}</Text>
+                        )}
+                      </View>
+                    </View>
+                  );
+                })}
+              </View>
+            </View>
+          )}
+
           <View style={styles.transactionsSection}>
             <View style={styles.sectionHeader}>
               <Text style={styles.sectionTitle}>Recent Activity</Text>
@@ -616,46 +657,52 @@ export default function HomeScreen() {
             </View>
 
             <View style={styles.transactionsList}>
-              {mockTransactions.slice(0, 4).map((tx, index) => (
-                <TouchableOpacity 
-                  key={tx.id} 
-                  style={[
-                    styles.transactionItem,
-                    index === mockTransactions.slice(0, 4).length - 1 && styles.transactionItemLast,
-                  ]}
-                  activeOpacity={0.7}
-                >
-                  <View style={[
-                    styles.transactionIcon,
-                    tx.type === 'received' ? styles.iconReceived : styles.iconSent,
-                  ]}>
-                    {tx.type === 'received' ? (
-                      <ArrowDownLeft size={18} color={Colors.light.success} />
-                    ) : (
-                      <ArrowUpRight size={18} color={Colors.light.error} />
-                    )}
-                  </View>
-                  <View style={styles.transactionDetails}>
-                    <Text style={styles.transactionName}>
-                      {tx.type === 'received' ? tx.sender : tx.recipient}
+              {(walletTransactions.length > 0 ? walletTransactions : mockTransactions).slice(0, 4).map((tx, index) => {
+                const isWalletTx = 'counterparty' in tx;
+                const txType = tx.type === 'received' ? 'received' : 'sent';
+                const displayName = isWalletTx
+                  ? ((tx as any).counterparty || (tx.type === 'exchange' ? 'Exchange' : 'Unknown'))
+                  : (tx.type === 'received' ? (tx as any).sender : (tx as any).recipient);
+                const txCurrency = isWalletTx ? (tx as any).currency : 'USD';
+                return (
+                  <TouchableOpacity 
+                    key={tx.id} 
+                    style={[
+                      styles.transactionItem,
+                      index === 3 && styles.transactionItemLast,
+                    ]}
+                    activeOpacity={0.7}
+                  >
+                    <View style={[
+                      styles.transactionIcon,
+                      txType === 'received' ? styles.iconReceived : styles.iconSent,
+                    ]}>
+                      {txType === 'received' ? (
+                        <ArrowDownLeft size={18} color={Colors.light.success} />
+                      ) : (
+                        <ArrowUpRight size={18} color={Colors.light.error} />
+                      )}
+                    </View>
+                    <View style={styles.transactionDetails}>
+                      <Text style={styles.transactionName}>{displayName}</Text>
+                      <Text style={styles.transactionDate}>
+                        {new Date(tx.date).toLocaleDateString('en-US', {
+                          month: 'short',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })}
+                      </Text>
+                    </View>
+                    <Text style={[
+                      styles.transactionAmount,
+                      txType === 'received' ? styles.amountReceived : styles.amountSent,
+                    ]}>
+                      {txType === 'received' ? '+' : '-'}{txCurrency === 'USD' ? '$' : ''}{tx.amount}{txCurrency !== 'USD' ? (' ' + txCurrency) : ''}
                     </Text>
-                    <Text style={styles.transactionDate}>
-                      {new Date(tx.date).toLocaleDateString('en-US', {
-                        month: 'short',
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                      })}
-                    </Text>
-                  </View>
-                  <Text style={[
-                    styles.transactionAmount,
-                    tx.type === 'received' ? styles.amountReceived : styles.amountSent,
-                  ]}>
-                    {tx.type === 'received' ? '+' : '-'}${tx.amount}
-                  </Text>
-                </TouchableOpacity>
-              ))}
+                  </TouchableOpacity>
+                );
+              })}
             </View>
           </View>
 
@@ -1192,6 +1239,66 @@ const styles = StyleSheet.create({
   },
   amountSent: {
     color: Colors.light.primaryDark,
+  },
+  holdingsSection: {
+    paddingHorizontal: 20,
+    marginBottom: 24,
+  },
+  holdingsList: {
+    backgroundColor: Colors.light.card,
+    borderRadius: 24,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.06,
+    shadowRadius: 16,
+    elevation: 4,
+  },
+  holdingItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 14,
+    paddingHorizontal: 18,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.light.borderLight,
+  },
+  holdingItemLast: {
+    borderBottomWidth: 0,
+  },
+  holdingLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  holdingIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: Colors.light.backgroundSecondary,
+  },
+  holdingName: {
+    fontSize: 15,
+    fontWeight: '600' as const,
+    color: Colors.light.primaryDark,
+    marginBottom: 2,
+  },
+  holdingSymbol: {
+    fontSize: 12,
+    color: Colors.light.textMuted,
+  },
+  holdingRight: {
+    alignItems: 'flex-end',
+  },
+  holdingAmount: {
+    fontSize: 15,
+    fontWeight: '700' as const,
+    color: Colors.light.primaryDark,
+    marginBottom: 2,
+  },
+  holdingUsd: {
+    fontSize: 12,
+    color: Colors.light.textMuted,
   },
   bottomSpacer: {
     height: 24,

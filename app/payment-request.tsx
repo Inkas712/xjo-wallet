@@ -40,9 +40,13 @@ import {
 } from 'lucide-react-native';
 import Colors from '@/constants/colors';
 import { useAuth } from '@/contexts/AuthContext';
+import { useWallet, CURRENCY_INFO } from '@/contexts/WalletContext';
 import { trpc } from '@/lib/trpc';
 import { PaymentMethod } from '@/types/payment';
+import { CurrencyCode } from '@/types';
 import { formatExpirationTime } from '@/utils/paymentSecurity';
+import { Image } from 'expo-image';
+import { ChevronDown, AlertTriangle } from 'lucide-react-native';
 
 interface NearbyUser {
   id: string;
@@ -60,13 +64,18 @@ interface PendingPaymentRequest {
   note?: string;
 }
 
+const SUPPORTED_CURRENCIES: CurrencyCode[] = ['USD', 'BTC', 'ETH', 'SOL', 'USDT', 'BNB'];
+
 export default function PaymentRequestScreen() {
   const router = useRouter();
   const { user } = useAuth();
+  const { sendPayment, receivePayment, getBalance, hasEnoughBalance, convertAmount, getUsdRate } = useWallet();
   
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod>('code');
   const [amount, setAmount] = useState('');
   const [note, setNote] = useState('');
+  const [selectedCurrency, setSelectedCurrency] = useState<CurrencyCode>('USD');
+  const [showCurrencyPicker, setShowCurrencyPicker] = useState(false);
   const [step, setStep] = useState<'input' | 'processing' | 'waiting' | 'success'>('input');
   
   const [generatedCode, setGeneratedCode] = useState<string>('');
@@ -182,6 +191,10 @@ export default function PaymentRequestScreen() {
           if (result.found) {
             if (result.status === 'accepted' || result.status === 'completed') {
               setNearbyConnectionStatus('accepted');
+              const pAmount = parseFloat(amount);
+              if (pAmount > 0) {
+                sendPayment(selectedCurrency, pAmount, selectedUser?.name || 'Unknown', note || undefined);
+              }
               setTransactionId(`TXN_${Date.now().toString(36).toUpperCase()}`);
               showSuccessAnimation();
             } else if (result.status === 'rejected') {
@@ -230,6 +243,10 @@ export default function PaymentRequestScreen() {
         try {
           const result = await trpcUtils.payment.getPaymentStatus.fetch({ code: generatedCode });
           if (result.exists && result.status === 'matched') {
+            const pAmount = parseFloat(amount);
+            if (pAmount > 0) {
+              sendPayment(selectedCurrency, pAmount, (result as any).recipientName || 'Code Recipient', note || undefined);
+            }
             setTransactionId(`TXN_${Date.now().toString(36).toUpperCase()}`);
             showSuccessAnimation();
           }
@@ -292,14 +309,25 @@ export default function PaymentRequestScreen() {
     if (parts.length > 2) {
       return parts[0] + '.' + parts.slice(1).join('');
     }
-    if (parts[1] && parts[1].length > 2) {
-      return parts[0] + '.' + parts[1].slice(0, 2);
+    const maxDecimals = selectedCurrency === 'USD' ? 2 : 8;
+    if (parts[1] && parts[1].length > maxDecimals) {
+      return parts[0] + '.' + parts[1].slice(0, maxDecimals);
     }
     return cleaned;
   };
 
+  const currentBalance = getBalance(selectedCurrency);
+  const parsedAmount = parseFloat(amount) || 0;
+  const insufficientBalance = parsedAmount > 0 && parsedAmount > currentBalance;
+
   const handleGenerateCode = async () => {
     if (!user || !amount) return;
+    
+    if (insufficientBalance) {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+      Alert.alert('Insufficient Balance', `You don't have enough ${selectedCurrency}. Available: ${currentBalance.toFixed(selectedCurrency === 'USD' ? 2 : 8)} ${selectedCurrency}`);
+      return;
+    }
     
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     setStep('processing');
@@ -309,7 +337,7 @@ export default function PaymentRequestScreen() {
         senderId: user.id,
         senderName: user.fullName,
         amount: parseFloat(amount),
-        currency: 'USD',
+        currency: selectedCurrency,
         note: note || undefined,
       });
       
@@ -339,6 +367,8 @@ export default function PaymentRequestScreen() {
       });
       
       if (result.success && result.paymentData) {
+        const pCurrency = (result.paymentData.currency || 'USD') as CurrencyCode;
+        receivePayment(pCurrency, result.paymentData.amount, result.paymentData.senderName, result.paymentData.note);
         setTransactionId(`TXN_${Date.now().toString(36).toUpperCase()}`);
         showSuccessAnimation();
       } else {
@@ -366,6 +396,12 @@ export default function PaymentRequestScreen() {
   const handleSelectNearbyUser = async (nearbyUser: NearbyUser) => {
     if (!user || !amount) return;
     
+    if (insufficientBalance) {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+      Alert.alert('Insufficient Balance', `You don't have enough ${selectedCurrency}.`);
+      return;
+    }
+    
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     setSelectedUser(nearbyUser);
     setNearbyConnectionStatus('sending');
@@ -376,7 +412,7 @@ export default function PaymentRequestScreen() {
         senderName: user.fullName,
         recipientId: nearbyUser.id,
         amount: parseFloat(amount),
-        currency: 'USD',
+        currency: selectedCurrency,
         note: note || undefined,
       });
       
@@ -413,6 +449,8 @@ export default function PaymentRequestScreen() {
         }
         
         if (accept) {
+          const pCurrency = (request.currency || 'USD') as CurrencyCode;
+          receivePayment(pCurrency, request.amount, request.senderName, request.note);
           setAmount(request.amount.toString());
           setTransactionId(`TXN_${Date.now().toString(36).toUpperCase()}`);
           showSuccessAnimation();
@@ -429,6 +467,12 @@ export default function PaymentRequestScreen() {
   const handleStartNFC = () => {
     if (!amount) return;
     
+    if (insufficientBalance) {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+      Alert.alert('Insufficient Balance', `You don't have enough ${selectedCurrency}.`);
+      return;
+    }
+    
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     setStep('waiting');
     setNfcStatus('searching');
@@ -443,8 +487,15 @@ export default function PaymentRequestScreen() {
     }, 3500);
     
     setTimeout(() => {
-      setTransactionId(`TXN_${Date.now().toString(36).toUpperCase()}`);
-      showSuccessAnimation();
+      const sent = sendPayment(selectedCurrency, parseFloat(amount), 'NFC Recipient', note || undefined);
+      if (sent) {
+        setTransactionId(`TXN_${Date.now().toString(36).toUpperCase()}`);
+        showSuccessAnimation();
+      } else {
+        setStep('input');
+        setNfcStatus('idle');
+        Alert.alert('Payment Failed', 'Insufficient balance');
+      }
     }, 4500);
   };
 
@@ -477,8 +528,9 @@ export default function PaymentRequestScreen() {
 
   const handleShareCode = async () => {
     try {
+      const currSymbol = CURRENCY_INFO[selectedCurrency].symbol;
       await Share.share({
-        message: `Pay me $${amount} using code: ${generatedCode}\n\nOpen XJO app and enter this code to complete the payment.`,
+        message: `Pay me ${currSymbol}${amount} ${selectedCurrency} using code: ${generatedCode}\n\nOpen XJO app and enter this code to complete the payment.`,
       });
     } catch (error) {
       console.error('Share error:', error);
@@ -540,11 +592,66 @@ export default function PaymentRequestScreen() {
     </View>
   );
 
+  const renderCurrencyPicker = () => (
+    <Modal visible={showCurrencyPicker} transparent animationType="slide">
+      <View style={styles.modalOverlay}>
+        <View style={styles.modalContent}>
+          <View style={styles.modalHeader}>
+            <Text style={styles.modalTitle}>Select Currency</Text>
+            <TouchableOpacity onPress={() => setShowCurrencyPicker(false)}>
+              <X size={24} color={Colors.light.textSecondary} />
+            </TouchableOpacity>
+          </View>
+          <ScrollView style={styles.modalScroll}>
+            {SUPPORTED_CURRENCIES.map((curr) => {
+              const info = CURRENCY_INFO[curr];
+              const bal = getBalance(curr);
+              return (
+                <TouchableOpacity
+                  key={curr}
+                  style={[
+                    styles.currencyOption,
+                    selectedCurrency === curr && styles.currencyOptionActive,
+                  ]}
+                  onPress={() => {
+                    setSelectedCurrency(curr);
+                    setShowCurrencyPicker(false);
+                    setAmount('');
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  }}
+                >
+                  <Image source={{ uri: info.icon }} style={styles.currencyIcon} contentFit="contain" />
+                  <View style={styles.currencyInfo}>
+                    <Text style={styles.currencyName}>{info.name}</Text>
+                    <Text style={styles.currencyBalance}>
+                      Balance: {curr === 'USD' ? `${bal.toFixed(2)}` : `${bal.toFixed(8)} ${curr}`}
+                    </Text>
+                  </View>
+                  <Text style={styles.currencyCode}>{curr}</Text>
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
+        </View>
+      </View>
+    </Modal>
+  );
+
   const renderAmountInput = () => (
     <View style={styles.amountCard}>
-      <Text style={styles.amountLabel}>Amount to Request</Text>
+      <View style={styles.amountHeader}>
+        <Text style={styles.amountLabel}>Amount to Send</Text>
+        <TouchableOpacity
+          style={styles.currencySelector}
+          onPress={() => setShowCurrencyPicker(true)}
+        >
+          <Image source={{ uri: CURRENCY_INFO[selectedCurrency].icon }} style={styles.currencySelectorIcon} contentFit="contain" />
+          <Text style={styles.currencySelectorText}>{selectedCurrency}</Text>
+          <ChevronDown size={16} color={Colors.light.textSecondary} />
+        </TouchableOpacity>
+      </View>
       <View style={styles.amountInputWrapper}>
-        <Text style={styles.currencySymbol}>$</Text>
+        <Text style={styles.currencySymbol}>{CURRENCY_INFO[selectedCurrency].symbol}</Text>
         <TextInput
           style={styles.amountInput}
           placeholder="0.00"
@@ -553,6 +660,17 @@ export default function PaymentRequestScreen() {
           onChangeText={(text) => setAmount(formatAmount(text))}
           keyboardType="decimal-pad"
         />
+      </View>
+      <View style={styles.balanceRow}>
+        <Text style={styles.balanceText}>
+          Available: {selectedCurrency === 'USD' ? `${currentBalance.toFixed(2)}` : `${currentBalance.toFixed(8)} ${selectedCurrency}`}
+        </Text>
+        {insufficientBalance && (
+          <View style={styles.insufficientBadge}>
+            <AlertTriangle size={12} color={Colors.light.error} />
+            <Text style={styles.insufficientText}>Insufficient</Text>
+          </View>
+        )}
       </View>
       <View style={styles.noteInputWrapper}>
         <TextInput
@@ -1053,7 +1171,9 @@ export default function PaymentRequestScreen() {
             <Check size={48} color={Colors.light.white} />
           </View>
           <Text style={styles.successTitle}>Payment Sent!</Text>
-          <Text style={styles.successAmount}>${amount}</Text>
+          <Text style={styles.successAmount}>
+            {CURRENCY_INFO[selectedCurrency].symbol}{amount} {selectedCurrency}
+          </Text>
           <Text style={styles.successMethod}>
             via {selectedMethod === 'nfc' ? 'NFC' : selectedMethod === 'ble' ? 'Nearby' : 'Code'}
           </Text>
@@ -1091,6 +1211,7 @@ export default function PaymentRequestScreen() {
           {selectedMethod === 'code' && renderCodeContent()}
         </ScrollView>
         
+        {renderCurrencyPicker()}
         {renderPendingRequestsModal()}
         {renderSuccessModal()}
       </SafeAreaView>
@@ -1206,16 +1327,100 @@ const styles = StyleSheet.create({
     shadowRadius: 16,
     elevation: 4,
   },
+  amountHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
   amountLabel: {
     fontSize: 14,
     fontWeight: '600' as const,
     color: Colors.light.textSecondary,
-    marginBottom: 12,
+  },
+  currencySelector: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: Colors.light.backgroundSecondary,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 12,
+    gap: 6,
+  },
+  currencySelectorIcon: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+  },
+  currencySelectorText: {
+    fontSize: 14,
+    fontWeight: '700' as const,
+    color: Colors.light.primaryDark,
+  },
+  balanceRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  balanceText: {
+    fontSize: 13,
+    color: Colors.light.textSecondary,
+  },
+  insufficientBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: Colors.light.errorLight,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
+  },
+  insufficientText: {
+    fontSize: 11,
+    fontWeight: '600' as const,
+    color: Colors.light.error,
+  },
+  currencyOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 14,
+    paddingHorizontal: 4,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.light.borderLight,
+  },
+  currencyOptionActive: {
+    backgroundColor: 'rgba(157, 193, 131, 0.1)',
+    borderRadius: 12,
+  },
+  currencyIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    marginRight: 12,
+  },
+  currencyInfo: {
+    flex: 1,
+  },
+  currencyName: {
+    fontSize: 15,
+    fontWeight: '600' as const,
+    color: Colors.light.primaryDark,
+    marginBottom: 2,
+  },
+  currencyBalance: {
+    fontSize: 12,
+    color: Colors.light.textMuted,
+  },
+  currencyCode: {
+    fontSize: 14,
+    fontWeight: '700' as const,
+    color: Colors.light.textSecondary,
   },
   amountInputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 8,
   },
   currencySymbol: {
     fontSize: 36,
