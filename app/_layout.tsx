@@ -7,6 +7,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { WalletProvider } from "@/contexts/WalletContext";
 import { ThemeProvider, useTheme } from "@/contexts/ThemeContext";
+import { TokenizationProvider } from "@/contexts/TokenizationContext";
 import { trpc, trpcClient } from "@/lib/trpc";
 
 SplashScreen.preventAutoHideAsync();
@@ -39,6 +40,12 @@ function RootLayoutNav() {
         <Stack.Screen name="product-details" options={{ title: "Product Details", presentation: "card" }} />
         <Stack.Screen name="scan" options={{ headerShown: false, presentation: "fullScreenModal" }} />
         <Stack.Screen name="payment-request" options={{ headerShown: false, presentation: "card" }} />
+        <Stack.Screen name="tokenization-dashboard" options={{ headerShown: false, presentation: "card" }} />
+        <Stack.Screen name="tokenization-marketplace" options={{ title: "Marketplace", presentation: "card" }} />
+        <Stack.Screen name="tokenization-buy" options={{ title: "Buy Tokens", presentation: "card" }} />
+        <Stack.Screen name="tokenization-create" options={{ title: "Tokenize Asset", presentation: "card" }} />
+        <Stack.Screen name="tokenization-detail" options={{ title: "Asset Details", presentation: "card" }} />
+        <Stack.Screen name="tokenization-portfolio" options={{ title: "Portfolio", presentation: "card" }} />
         <Stack.Screen name="+not-found" />
       </Stack>
     </>
@@ -57,7 +64,9 @@ export default function RootLayout() {
           <ThemeProvider>
             <AuthProvider>
               <WalletProvider>
-                <RootLayoutNav />
+                <TokenizationProvider>
+                  <RootLayoutNav />
+                </TokenizationProvider>
               </WalletProvider>
             </AuthProvider>
           </ThemeProvider>

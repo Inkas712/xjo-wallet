@@ -34,6 +34,8 @@ import {
   CreditCard,
   LineChart,
   CandlestickChart,
+  Layers,
+  Zap,
 } from 'lucide-react-native';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -650,6 +652,41 @@ export default function HomeScreen() {
             </View>
           )}
 
+          <TouchableOpacity
+            style={[styles.tokenizationBanner, { backgroundColor: colors.card, borderColor: colors.borderLight }]}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+              router.push('/tokenization-dashboard');
+            }}
+            activeOpacity={0.7}
+          >
+            <LinearGradient
+              colors={['#1a0533', '#0f1b3d']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.tokenizationBannerGradient}
+            >
+              <View style={styles.tokenizationBannerContent}>
+                <View style={styles.tokenizationBannerLeft}>
+                  <View style={styles.tokenizationIconWrap}>
+                    <Layers size={22} color="#9945FF" />
+                  </View>
+                  <View>
+                    <Text style={styles.tokenizationBannerTitle}>Asset Tokenization</Text>
+                    <Text style={styles.tokenizationBannerDesc}>Invest in real estate, stocks, gold & crypto</Text>
+                  </View>
+                </View>
+                <View style={styles.tokenizationBannerRight}>
+                  <View style={styles.solanaPill}>
+                    <Zap size={10} color="#9945FF" />
+                    <Text style={styles.solanaPillText}>Solana</Text>
+                  </View>
+                  <ChevronRight size={18} color="rgba(255,255,255,0.5)" />
+                </View>
+              </View>
+            </LinearGradient>
+          </TouchableOpacity>
+
           <View style={styles.transactionsSection}>
             <View style={styles.sectionHeader}>
               <Text style={[styles.sectionTitle, { color: colors.text }]}>Recent Activity</Text>
@@ -1253,5 +1290,62 @@ const styles = StyleSheet.create({
   candleBody: {
     position: 'absolute',
     borderRadius: 1,
+  },
+  tokenizationBanner: {
+    marginHorizontal: 20,
+    marginBottom: 24,
+    borderRadius: 18,
+    overflow: 'hidden' as const,
+    borderWidth: 1,
+  },
+  tokenizationBannerGradient: {
+    padding: 16,
+  },
+  tokenizationBannerContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  tokenizationBannerLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    flex: 1,
+  },
+  tokenizationIconWrap: {
+    width: 44,
+    height: 44,
+    borderRadius: 12,
+    backgroundColor: 'rgba(153,69,255,0.2)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  tokenizationBannerTitle: {
+    fontSize: 15,
+    fontWeight: '700' as const,
+    color: '#FFFFFF',
+    marginBottom: 2,
+  },
+  tokenizationBannerDesc: {
+    fontSize: 11,
+    color: 'rgba(255,255,255,0.55)',
+  },
+  tokenizationBannerRight: {
+    alignItems: 'flex-end',
+    gap: 6,
+  },
+  solanaPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(153,69,255,0.15)',
+    borderRadius: 6,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    gap: 4,
+  },
+  solanaPillText: {
+    fontSize: 10,
+    color: '#9945FF',
+    fontWeight: '600' as const,
   },
 });
