@@ -15,11 +15,13 @@ import {
   Search,
 } from 'lucide-react-native';
 import Colors from '@/constants/colors';
+import { useTheme } from '@/contexts/ThemeContext';
 import { mockTransactions } from '@/mocks/transactions';
 
 type FilterType = 'all' | 'sent' | 'received';
 
 export default function TransactionsScreen() {
+  const { colors } = useTheme();
   const [filter, setFilter] = useState<FilterType>('all');
   const [refreshing, setRefreshing] = useState(false);
 
@@ -43,12 +45,13 @@ export default function TransactionsScreen() {
     .reduce((sum, tx) => sum + tx.amount, 0);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <Stack.Screen
         options={{
           title: 'Transactions',
-          headerStyle: { backgroundColor: Colors.light.background },
-          headerTintColor: Colors.light.primary,
+          headerStyle: { backgroundColor: colors.background },
+          headerTintColor: colors.primary,
+          headerTitleStyle: { color: colors.text },
         }}
       />
 
@@ -60,7 +63,7 @@ export default function TransactionsScreen() {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            tintColor={Colors.light.primary}
+            tintColor={colors.primary}
           />
         }
       >
@@ -68,7 +71,7 @@ export default function TransactionsScreen() {
           <View style={[styles.summaryCard, styles.sentCard]}>
             <ArrowUpRight size={20} color={Colors.light.error} />
             <Text style={styles.summaryLabel}>Total Sent</Text>
-            <Text style={styles.summaryValue}>-${totalSent.toFixed(2)}</Text>
+            <Text style={[styles.summaryValue, { color: colors.text }]}>-${totalSent.toFixed(2)}</Text>
           </View>
           <View style={[styles.summaryCard, styles.receivedCard]}>
             <ArrowDownLeft size={20} color={Colors.light.success} />
@@ -77,24 +80,24 @@ export default function TransactionsScreen() {
           </View>
         </View>
 
-        <View style={styles.filterRow}>
+        <View style={[styles.filterRow, { backgroundColor: colors.backgroundSecondary }]}>
           {(['all', 'sent', 'received'] as FilterType[]).map((f) => (
             <TouchableOpacity
               key={f}
-              style={[styles.filterButton, filter === f && styles.filterButtonActive]}
+              style={[styles.filterButton, filter === f && { backgroundColor: colors.primary }]}
               onPress={() => {
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                 setFilter(f);
               }}
             >
-              <Text style={[styles.filterText, filter === f && styles.filterTextActive]}>
+              <Text style={[styles.filterText, { color: colors.textMuted }, filter === f && { color: '#FFFFFF' }]}>
                 {f.charAt(0).toUpperCase() + f.slice(1)}
               </Text>
             </TouchableOpacity>
           ))}
         </View>
 
-        <View style={styles.transactionsList}>
+        <View style={[styles.transactionsList, { backgroundColor: colors.cardBg, borderColor: colors.cardBorder }]}>
           {filteredTransactions.length === 0 ? (
             <View style={styles.emptyState}>
               <Search size={48} color={Colors.light.textMuted} />
@@ -126,7 +129,7 @@ export default function TransactionsScreen() {
                   )}
                 </View>
                 <View style={styles.transactionDetails}>
-                  <Text style={styles.transactionName}>
+                  <Text style={[styles.transactionName, { color: colors.text }]}>
                     {tx.type === 'received' ? tx.sender : tx.recipient}
                   </Text>
                   <Text style={styles.transactionDate}>
@@ -165,7 +168,6 @@ export default function TransactionsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.light.background,
   },
   scrollView: {
     flex: 1,

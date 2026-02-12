@@ -21,8 +21,8 @@ import {
   X,
   Wifi,
 } from 'lucide-react-native';
-import Colors from '@/constants/colors';
 import { useAuth } from '@/contexts/AuthContext';
+import { useTheme } from '@/contexts/ThemeContext';
 import { mockCards } from '@/mocks/cards';
 import { Card } from '@/types';
 
@@ -34,6 +34,7 @@ type CardAction = 'freeze' | 'reissue' | 'close' | 'details' | null;
 
 export default function CardsScreen() {
   const { user } = useAuth();
+  const { colors, isDark } = useTheme();
   const [cards, setCards] = useState<Card[]>(
     mockCards.map(card => ({ ...card, cardholderName: user?.fullName?.toUpperCase() || 'CARDHOLDER' }))
   );
@@ -157,14 +158,14 @@ export default function CardsScreen() {
         </View>
       </LinearGradient>
 
-      <View style={styles.cardActions}>
+      <View style={[styles.cardActions, { backgroundColor: colors.cardBg, borderColor: colors.cardBorder }]}>
         <TouchableOpacity
           style={styles.actionButton}
           onPress={() => openActionModal('freeze', card)}
           activeOpacity={0.7}
         >
-          <Snowflake size={20} color={card.isFrozen ? Colors.light.primary : Colors.light.textSecondary} />
-          <Text style={[styles.actionText, card.isFrozen && styles.actionTextActive]}>
+          <Snowflake size={20} color={card.isFrozen ? colors.primary : colors.textSecondary} />
+          <Text style={[styles.actionText, { color: colors.textSecondary }, card.isFrozen && { color: colors.primary }]}>
             {card.isFrozen ? 'Unfreeze' : 'Freeze'}
           </Text>
         </TouchableOpacity>
@@ -174,8 +175,8 @@ export default function CardsScreen() {
           onPress={() => openActionModal('reissue', card)}
           activeOpacity={0.7}
         >
-          <RefreshCw size={20} color={Colors.light.textSecondary} />
-          <Text style={styles.actionText}>Reissue</Text>
+          <RefreshCw size={20} color={colors.textSecondary} />
+          <Text style={[styles.actionText, { color: colors.textSecondary }]}>Reissue</Text>
         </TouchableOpacity>
         
         <TouchableOpacity
@@ -183,8 +184,8 @@ export default function CardsScreen() {
           onPress={() => openActionModal('close', card)}
           activeOpacity={0.7}
         >
-          <XCircle size={20} color={Colors.light.textSecondary} />
-          <Text style={styles.actionText}>Close</Text>
+          <XCircle size={20} color={colors.textSecondary} />
+          <Text style={[styles.actionText, { color: colors.textSecondary }]}>Close</Text>
         </TouchableOpacity>
         
         <TouchableOpacity
@@ -196,8 +197,8 @@ export default function CardsScreen() {
           }}
           activeOpacity={0.7}
         >
-          <Eye size={20} color={Colors.light.textSecondary} />
-          <Text style={styles.actionText}>Details</Text>
+          <Eye size={20} color={colors.textSecondary} />
+          <Text style={[styles.actionText, { color: colors.textSecondary }]}>Details</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -212,25 +213,25 @@ export default function CardsScreen() {
           return (
             <>
               <View style={[styles.modalIcon, styles.modalIconFreeze]}>
-                <Snowflake size={32} color={Colors.light.primary} />
+                <Snowflake size={32} color={colors.primary} />
               </View>
-              <Text style={styles.modalTitle}>
+              <Text style={[styles.modalTitle, { color: colors.text }]}>
                 {selectedCard.isFrozen ? 'Unfreeze Card?' : 'Freeze Card?'}
               </Text>
-              <Text style={styles.modalDescription}>
+              <Text style={[styles.modalDescription, { color: colors.textSecondary }]}>
                 {selectedCard.isFrozen
                   ? 'This will reactivate your card for all transactions.'
                   : 'This will temporarily block all transactions on this card.'}
               </Text>
               <View style={styles.modalActions}>
                 <TouchableOpacity
-                  style={styles.modalCancelButton}
+                  style={[styles.modalCancelButton, { backgroundColor: colors.backgroundSecondary }]}
                   onPress={closeModal}
                 >
-                  <Text style={styles.modalCancelText}>Cancel</Text>
+                  <Text style={[styles.modalCancelText, { color: colors.textSecondary }]}>Cancel</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  style={styles.modalConfirmButton}
+                  style={[styles.modalConfirmButton, { backgroundColor: colors.primaryDark }]}
                   onPress={handleFreezeCard}
                 >
                   <Text style={styles.modalConfirmText}>
@@ -244,21 +245,21 @@ export default function CardsScreen() {
           return (
             <>
               <View style={[styles.modalIcon, styles.modalIconReissue]}>
-                <RefreshCw size={32} color={Colors.light.warning} />
+                <RefreshCw size={32} color={colors.warning} />
               </View>
-              <Text style={styles.modalTitle}>Reissue Card?</Text>
-              <Text style={styles.modalDescription}>
+              <Text style={[styles.modalTitle, { color: colors.text }]}>Reissue Card?</Text>
+              <Text style={[styles.modalDescription, { color: colors.textSecondary }]}>
                 A new card will be issued with a new number. Your current card will be deactivated.
               </Text>
               <View style={styles.modalActions}>
                 <TouchableOpacity
-                  style={styles.modalCancelButton}
+                  style={[styles.modalCancelButton, { backgroundColor: colors.backgroundSecondary }]}
                   onPress={closeModal}
                 >
-                  <Text style={styles.modalCancelText}>Cancel</Text>
+                  <Text style={[styles.modalCancelText, { color: colors.textSecondary }]}>Cancel</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  style={styles.modalConfirmButton}
+                  style={[styles.modalConfirmButton, { backgroundColor: colors.primaryDark }]}
                   onPress={handleReissueCard}
                 >
                   <Text style={styles.modalConfirmText}>Reissue</Text>
@@ -270,21 +271,21 @@ export default function CardsScreen() {
           return (
             <>
               <View style={[styles.modalIcon, styles.modalIconClose]}>
-                <XCircle size={32} color={Colors.light.error} />
+                <XCircle size={32} color={colors.error} />
               </View>
-              <Text style={styles.modalTitle}>Close Card?</Text>
-              <Text style={styles.modalDescription}>
+              <Text style={[styles.modalTitle, { color: colors.text }]}>Close Card?</Text>
+              <Text style={[styles.modalDescription, { color: colors.textSecondary }]}>
                 This action cannot be undone. The card will be permanently closed.
               </Text>
               <View style={styles.modalActions}>
                 <TouchableOpacity
-                  style={styles.modalCancelButton}
+                  style={[styles.modalCancelButton, { backgroundColor: colors.backgroundSecondary }]}
                   onPress={closeModal}
                 >
-                  <Text style={styles.modalCancelText}>Cancel</Text>
+                  <Text style={[styles.modalCancelText, { color: colors.textSecondary }]}>Cancel</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  style={[styles.modalConfirmButton, styles.modalConfirmButtonDanger]}
+                  style={[styles.modalConfirmButton, { backgroundColor: colors.error }]}
                   onPress={handleCloseCard}
                 >
                   <Text style={styles.modalConfirmText}>Close Card</Text>
@@ -296,31 +297,31 @@ export default function CardsScreen() {
           return (
             <>
               <View style={[styles.modalIcon, styles.modalIconDetails]}>
-                <CreditCard size={32} color={Colors.light.primary} />
+                <CreditCard size={32} color={colors.primary} />
               </View>
-              <Text style={styles.modalTitle}>Card Details</Text>
-              <View style={styles.detailsContainer}>
-                <View style={styles.detailRow}>
-                  <Text style={styles.detailLabel}>Card Number</Text>
-                  <Text style={styles.detailValue}>
+              <Text style={[styles.modalTitle, { color: colors.text }]}>Card Details</Text>
+              <View style={[styles.detailsContainer, { backgroundColor: colors.backgroundSecondary }]}>
+                <View style={[styles.detailRow, { borderBottomColor: colors.borderLight }]}>
+                  <Text style={[styles.detailLabel, { color: colors.textSecondary }]}>Card Number</Text>
+                  <Text style={[styles.detailValue, { color: colors.text }]}>
                     {showDetails ? `4532 8721 5643 ${selectedCard.lastFour}` : '•••• •••• •••• ' + selectedCard.lastFour}
                   </Text>
                 </View>
-                <View style={styles.detailRow}>
-                  <Text style={styles.detailLabel}>CVV</Text>
-                  <Text style={styles.detailValue}>{showDetails ? '847' : '•••'}</Text>
+                <View style={[styles.detailRow, { borderBottomColor: colors.borderLight }]}>
+                  <Text style={[styles.detailLabel, { color: colors.textSecondary }]}>CVV</Text>
+                  <Text style={[styles.detailValue, { color: colors.text }]}>{showDetails ? '847' : '•••'}</Text>
                 </View>
-                <View style={styles.detailRow}>
-                  <Text style={styles.detailLabel}>Expiry</Text>
-                  <Text style={styles.detailValue}>{selectedCard.expiryDate}</Text>
+                <View style={[styles.detailRow, { borderBottomColor: colors.borderLight }]}>
+                  <Text style={[styles.detailLabel, { color: colors.textSecondary }]}>Expiry</Text>
+                  <Text style={[styles.detailValue, { color: colors.text }]}>{selectedCard.expiryDate}</Text>
                 </View>
-                <View style={styles.detailRow}>
-                  <Text style={styles.detailLabel}>Cardholder</Text>
-                  <Text style={styles.detailValue}>{selectedCard.cardholderName}</Text>
+                <View style={[styles.detailRow, { borderBottomColor: colors.borderLight }]}>
+                  <Text style={[styles.detailLabel, { color: colors.textSecondary }]}>Cardholder</Text>
+                  <Text style={[styles.detailValue, { color: colors.text }]}>{selectedCard.cardholderName}</Text>
                 </View>
               </View>
               <TouchableOpacity
-                style={styles.modalConfirmButton}
+                style={[styles.modalConfirmButton, { backgroundColor: colors.primaryDark }]}
                 onPress={closeModal}
               >
                 <Text style={styles.modalConfirmText}>Done</Text>
@@ -333,7 +334,7 @@ export default function CardsScreen() {
     return (
       <Modal visible={true} transparent animationType="none">
         <TouchableOpacity
-          style={styles.modalOverlay}
+          style={[styles.modalOverlay, { backgroundColor: colors.overlay }]}
           activeOpacity={1}
           onPress={closeModal}
         >
@@ -341,6 +342,8 @@ export default function CardsScreen() {
             style={[
               styles.modalContent,
               {
+                backgroundColor: colors.backgroundTertiary,
+                borderColor: colors.border,
                 opacity: modalAnim,
                 transform: [
                   {
@@ -355,7 +358,7 @@ export default function CardsScreen() {
           >
             <TouchableOpacity activeOpacity={1}>
               <TouchableOpacity style={styles.modalCloseButton} onPress={closeModal}>
-                <X size={20} color={Colors.light.textMuted} />
+                <X size={20} color={colors.textMuted} />
               </TouchableOpacity>
               {modalContent()}
             </TouchableOpacity>
@@ -366,16 +369,16 @@ export default function CardsScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <SafeAreaView edges={['top']} style={styles.safeArea}>
         <View style={styles.header}>
           <View style={styles.headerRow}>
-            <View style={styles.headerLogoMark}>
+            <View style={[styles.headerLogoMark, { backgroundColor: colors.primary }]}>
               <Text style={styles.headerLogoText}>XJO</Text>
             </View>
             <View>
-              <Text style={styles.title}>My Cards</Text>
-              <Text style={styles.subtitle}>{cards.length} cards</Text>
+              <Text style={[styles.title, { color: colors.text }]}>My Cards</Text>
+              <Text style={[styles.subtitle, { color: colors.textSecondary }]}>{cards.length} cards</Text>
             </View>
           </View>
         </View>
@@ -394,14 +397,14 @@ export default function CardsScreen() {
           </ScrollView>
         ) : (
           <View style={styles.emptyState}>
-            <View style={styles.emptyIcon}>
-              <CreditCard size={48} color={Colors.light.textMuted} />
+            <View style={[styles.emptyIcon, { backgroundColor: colors.backgroundSecondary }]}>
+              <CreditCard size={48} color={colors.textMuted} />
             </View>
-            <Text style={styles.emptyTitle}>No Cards Yet</Text>
-            <Text style={styles.emptyDescription}>
+            <Text style={[styles.emptyTitle, { color: colors.text }]}>No Cards Yet</Text>
+            <Text style={[styles.emptyDescription, { color: colors.textSecondary }]}>
               You don&apos;t have any cards. Add a new card to get started.
             </Text>
-            <TouchableOpacity style={styles.addCardButton}>
+            <TouchableOpacity style={[styles.addCardButton, { backgroundColor: colors.primaryDark }]}>
               <Text style={styles.addCardText}>Add Card</Text>
             </TouchableOpacity>
           </View>
@@ -416,7 +419,6 @@ export default function CardsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.light.background,
   },
   safeArea: {
     flex: 1,
@@ -434,25 +436,22 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 14,
-    backgroundColor: Colors.light.primary,
     alignItems: 'center',
     justifyContent: 'center',
   },
   headerLogoText: {
     fontSize: 14,
     fontWeight: '800' as const,
-    color: Colors.light.white,
+    color: '#FFFFFF',
     letterSpacing: 1,
   },
   title: {
     fontSize: 24,
     fontWeight: '700' as const,
-    color: '#FFFFFF',
     marginBottom: 2,
   },
   subtitle: {
     fontSize: 15,
-    color: Colors.light.textSecondary,
   },
   cardsContainer: {
     paddingHorizontal: 24,
@@ -501,7 +500,7 @@ const styles = StyleSheet.create({
   cardBrandText: {
     fontSize: 16,
     fontWeight: '800' as const,
-    color: Colors.light.white,
+    color: '#FFFFFF',
     letterSpacing: 2,
   },
   cardTypeContainer: {
@@ -536,7 +535,7 @@ const styles = StyleSheet.create({
   cardNumber: {
     fontSize: 22,
     fontWeight: '600' as const,
-    color: Colors.light.white,
+    color: '#FFFFFF',
     letterSpacing: 2,
     marginBottom: 16,
   },
@@ -553,23 +552,21 @@ const styles = StyleSheet.create({
   cardholderName: {
     fontSize: 14,
     fontWeight: '600' as const,
-    color: Colors.light.white,
+    color: '#FFFFFF',
     letterSpacing: 1,
   },
   cardExpiry: {
     fontSize: 14,
     fontWeight: '600' as const,
-    color: Colors.light.white,
+    color: '#FFFFFF',
   },
   cardActions: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     marginTop: 20,
-    backgroundColor: 'rgba(255,255,255,0.05)',
     borderRadius: 16,
     padding: 16,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.08)',
   },
   actionButton: {
     alignItems: 'center',
@@ -577,11 +574,7 @@ const styles = StyleSheet.create({
   },
   actionText: {
     fontSize: 12,
-    color: Colors.light.textSecondary,
     fontWeight: '500' as const,
-  },
-  actionTextActive: {
-    color: Colors.light.primary,
   },
   emptyState: {
     flex: 1,
@@ -593,7 +586,6 @@ const styles = StyleSheet.create({
     width: 96,
     height: 96,
     borderRadius: 48,
-    backgroundColor: Colors.light.backgroundSecondary,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 24,
@@ -601,18 +593,15 @@ const styles = StyleSheet.create({
   emptyTitle: {
     fontSize: 20,
     fontWeight: '600' as const,
-    color: '#FFFFFF',
     marginBottom: 8,
   },
   emptyDescription: {
     fontSize: 15,
-    color: Colors.light.textSecondary,
     textAlign: 'center',
     lineHeight: 22,
     marginBottom: 24,
   },
   addCardButton: {
-    backgroundColor: Colors.light.primaryDark,
     paddingHorizontal: 32,
     paddingVertical: 14,
     borderRadius: 12,
@@ -620,23 +609,20 @@ const styles = StyleSheet.create({
   addCardText: {
     fontSize: 15,
     fontWeight: '600' as const,
-    color: Colors.light.white,
+    color: '#FFFFFF',
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: Colors.light.overlay,
     alignItems: 'center',
     justifyContent: 'center',
     padding: 24,
   },
   modalContent: {
-    backgroundColor: '#1C2128',
     borderRadius: 24,
     padding: 24,
     width: '100%',
     maxWidth: 340,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.1)',
   },
   modalCloseButton: {
     position: 'absolute',
@@ -668,13 +654,11 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: 20,
     fontWeight: '700' as const,
-    color: '#FFFFFF',
     textAlign: 'center',
     marginBottom: 8,
   },
   modalDescription: {
     fontSize: 15,
-    color: Colors.light.textSecondary,
     textAlign: 'center',
     lineHeight: 22,
     marginBottom: 24,
@@ -687,31 +671,24 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 14,
     borderRadius: 12,
-    backgroundColor: Colors.light.backgroundSecondary,
     alignItems: 'center',
   },
   modalCancelText: {
     fontSize: 15,
     fontWeight: '600' as const,
-    color: Colors.light.textSecondary,
   },
   modalConfirmButton: {
     flex: 1,
     paddingVertical: 14,
     borderRadius: 12,
-    backgroundColor: Colors.light.primaryDark,
     alignItems: 'center',
-  },
-  modalConfirmButtonDanger: {
-    backgroundColor: Colors.light.error,
   },
   modalConfirmText: {
     fontSize: 15,
     fontWeight: '600' as const,
-    color: Colors.light.white,
+    color: '#FFFFFF',
   },
   detailsContainer: {
-    backgroundColor: Colors.light.backgroundSecondary,
     borderRadius: 12,
     padding: 16,
     marginBottom: 20,
@@ -721,15 +698,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: 10,
     borderBottomWidth: 1,
-    borderBottomColor: Colors.light.borderLight,
   },
   detailLabel: {
     fontSize: 14,
-    color: Colors.light.textSecondary,
   },
   detailValue: {
     fontSize: 14,
     fontWeight: '600' as const,
-    color: '#FFFFFF',
   },
 });

@@ -23,9 +23,11 @@ import {
 } from 'lucide-react-native';
 import Colors from '@/constants/colors';
 import { useAuth } from '@/contexts/AuthContext';
+import { useTheme } from '@/contexts/ThemeContext';
 
 export default function ReceiveScreen() {
   const { user } = useAuth();
+  const { colors } = useTheme();
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const checkAnim = useRef(new Animated.Value(0)).current;
 
@@ -83,12 +85,13 @@ export default function ReceiveScreen() {
   const qrPattern = generateQRPattern();
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <Stack.Screen
         options={{
           title: 'Receive Payment',
-          headerStyle: { backgroundColor: Colors.light.background },
-          headerTintColor: Colors.light.primary,
+          headerStyle: { backgroundColor: colors.background },
+          headerTintColor: colors.primary,
+          headerTitleStyle: { color: colors.text },
         }}
       />
 
@@ -127,8 +130,8 @@ export default function ReceiveScreen() {
             <Text style={styles.qrLabel}>Scan to pay with XJO</Text>
           </LinearGradient>
 
-          <View style={styles.detailsCard}>
-            <Text style={styles.sectionTitle}>Payment Details</Text>
+          <View style={[styles.detailsCard, { backgroundColor: colors.cardBg, borderColor: colors.cardBorder }]}>
+            <Text style={[styles.sectionTitle, { color: colors.text }]}>Payment Details</Text>
 
             <View style={styles.detailItem}>
               <View style={styles.detailIcon}>
@@ -136,7 +139,7 @@ export default function ReceiveScreen() {
               </View>
               <View style={styles.detailContent}>
                 <Text style={styles.detailLabel}>XJO Username</Text>
-                <Text style={styles.detailValue}>{xjoUsername}</Text>
+                <Text style={[styles.detailValue, { color: colors.text }]}>{xjoUsername}</Text>
               </View>
               <TouchableOpacity
                 style={styles.copyButton}
@@ -199,7 +202,6 @@ export default function ReceiveScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.light.background,
   },
   safeArea: {
     flex: 1,

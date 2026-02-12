@@ -1,5 +1,36 @@
-export default {
+const Colors = {
   light: {
+    background: '#F5F5F7',
+    backgroundSecondary: '#FFFFFF',
+    backgroundTertiary: '#EEEEF0',
+    card: '#FFFFFF',
+    text: '#1C1C1E',
+    textSecondary: 'rgba(0,0,0,0.55)',
+    textMuted: 'rgba(0,0,0,0.35)',
+    primary: '#6B8E4E',
+    primaryDark: '#5A7D40',
+    primaryDarker: '#4A6C33',
+    accent: '#7BA05B',
+    success: '#34C759',
+    error: '#FF3B30',
+    errorLight: 'rgba(255, 59, 48, 0.12)',
+    warning: '#FF9500',
+    border: 'rgba(0,0,0,0.1)',
+    borderLight: 'rgba(0,0,0,0.06)',
+    shadow: 'rgba(0, 0, 0, 0.08)',
+    tint: '#6B8E4E',
+    tabIconDefault: 'rgba(0,0,0,0.35)',
+    tabIconSelected: '#6B8E4E',
+    overlay: 'rgba(0, 0, 0, 0.4)',
+    white: '#FFFFFF',
+    chartGradientStart: '#6B8E4E',
+    chartGradientEnd: '#34C759',
+    cardBg: 'rgba(0,0,0,0.03)',
+    cardBorder: 'rgba(0,0,0,0.06)',
+    inputBg: '#F0F0F2',
+    statusBarStyle: 'dark' as const,
+  },
+  dark: {
     background: '#0D1117',
     backgroundSecondary: '#161B22',
     backgroundTertiary: '#1C2128',
@@ -25,5 +56,13 @@ export default {
     white: '#FFFFFF',
     chartGradientStart: '#9DC183',
     chartGradientEnd: '#4ADE80',
+    cardBg: 'rgba(255,255,255,0.05)',
+    cardBorder: 'rgba(255,255,255,0.08)',
+    inputBg: '#1C2128',
+    statusBarStyle: 'light' as const,
   },
 };
+
+export type ThemeColors = Omit<typeof Colors.dark, 'statusBarStyle'> & { statusBarStyle: 'light' | 'dark' };
+
+export default Colors;

@@ -13,12 +13,14 @@ import { Image } from 'expo-image';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { TrendingUp, TrendingDown, Eye, EyeOff } from 'lucide-react-native';
 import Colors from '@/constants/colors';
+import { useTheme } from '@/contexts/ThemeContext';
 import { CryptoCompareAPI } from '@/services/crypto';
 
 const TOP_COINS = ['BTC', 'ETH', 'SOL', 'USDT', 'BNB', 'XRP', 'ADA', 'DOGE', 'AVAX', 'DOT'];
 
 export default function AllAssetsScreen() {
   const router = useRouter();
+  const { colors, isDark } = useTheme();
   const [balanceVisible, setBalanceVisible] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const queryClient = useQueryClient();
@@ -46,12 +48,13 @@ export default function AllAssetsScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <Stack.Screen
         options={{
           title: 'All Assets',
-          headerStyle: { backgroundColor: Colors.light.background },
-          headerTintColor: Colors.light.primary,
+          headerStyle: { backgroundColor: colors.background },
+          headerTintColor: colors.primary,
+          headerTitleStyle: { color: colors.text },
         }}
       />
 
@@ -63,7 +66,7 @@ export default function AllAssetsScreen() {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            tintColor={Colors.light.primary}
+            tintColor={colors.primary}
           />
         }
       >
@@ -81,11 +84,11 @@ export default function AllAssetsScreen() {
           <Text style={styles.totalValue}>{formatCurrency(0)}</Text>
         </View>
 
-        <Text style={styles.sectionTitle}>Market Prices</Text>
+        <Text style={[styles.sectionTitle, { color: colors.text }]}>Market Prices</Text>
 
         {isLoading ? (
           <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color={Colors.light.primary} />
+            <ActivityIndicator size="large" color={colors.primary} />
             <Text style={styles.loadingText}>Loading prices...</Text>
           </View>
         ) : cryptoPrices.length === 0 ? (
@@ -96,7 +99,7 @@ export default function AllAssetsScreen() {
           cryptoPrices.map((asset, index) => (
             <TouchableOpacity 
               key={`${asset.symbol}-${index}`} 
-              style={styles.assetCard} 
+              style={[styles.assetCard, { backgroundColor: colors.cardBg, borderColor: colors.cardBorder }]} 
               activeOpacity={0.7}
               onPress={() => router.push({ pathname: '/asset-details', params: { symbol: asset.symbol } })}
             >
@@ -106,11 +109,11 @@ export default function AllAssetsScreen() {
                 contentFit="contain"
               />
               <View style={styles.assetInfo}>
-                <Text style={styles.assetName}>{asset.name}</Text>
+                <Text style={[styles.assetName, { color: colors.text }]}>{asset.name}</Text>
                 <Text style={styles.assetBalance}>{asset.symbol}</Text>
               </View>
               <View style={styles.assetValues}>
-                <Text style={styles.assetUsdValue}>{formatCurrency(asset.price)}</Text>
+                <Text style={[styles.assetUsdValue, { color: colors.text }]}>{formatCurrency(asset.price)}</Text>
                 <View style={[
                   styles.changeContainer,
                   asset.change24h >= 0 ? styles.changePositive : styles.changeNegative,
@@ -139,7 +142,6 @@ export default function AllAssetsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.light.background,
   },
   scrollView: {
     flex: 1,

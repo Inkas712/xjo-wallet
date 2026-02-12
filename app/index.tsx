@@ -12,12 +12,14 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { ArrowRight, Shield, Sparkles } from 'lucide-react-native';
 import Colors from '@/constants/colors';
 import { useAuth } from '@/contexts/AuthContext';
+import { useTheme } from '@/contexts/ThemeContext';
 
 const { width } = Dimensions.get('window');
 
 export default function WelcomeScreen() {
   const router = useRouter();
   const { hasAccount, isAuthenticated, isLoading } = useAuth();
+  const { colors } = useTheme();
   
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(50)).current;
@@ -73,7 +75,7 @@ export default function WelcomeScreen() {
 
   if (isLoading) {
     return (
-      <View style={styles.loadingContainer}>
+      <View style={[styles.loadingContainer, { backgroundColor: colors.background }]}>
         <View style={styles.splashLogoContainer}>
           <Text style={styles.splashLogoText}>XJO</Text>
         </View>
@@ -91,7 +93,7 @@ export default function WelcomeScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <Animated.View
         style={[
           styles.content,
@@ -113,7 +115,7 @@ export default function WelcomeScreen() {
         </Animated.View>
 
         <View style={styles.textContainer}>
-          <Text style={styles.title}>XJO</Text>
+          <Text style={[styles.title, { color: colors.text }]}>XJO</Text>
           <Text style={styles.subtitle}>
             Your Smart Financial Companion
           </Text>
@@ -156,11 +158,9 @@ export default function WelcomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.light.background,
   },
   loadingContainer: {
     flex: 1,
-    backgroundColor: Colors.light.background,
     alignItems: 'center',
     justifyContent: 'center',
   },

@@ -40,6 +40,7 @@ import {
 } from 'lucide-react-native';
 import Colors from '@/constants/colors';
 import { useAuth } from '@/contexts/AuthContext';
+import { useTheme } from '@/contexts/ThemeContext';
 import { useWallet, CURRENCY_INFO } from '@/contexts/WalletContext';
 import { trpc } from '@/lib/trpc';
 import { PaymentMethod } from '@/types/payment';
@@ -69,6 +70,7 @@ const SUPPORTED_CURRENCIES: CurrencyCode[] = ['USD', 'BTC', 'ETH', 'SOL', 'USDT'
 export default function PaymentRequestScreen() {
   const router = useRouter();
   const { user } = useAuth();
+  const { colors } = useTheme();
   const { sendPayment, receivePayment, getBalance, hasEnoughBalance, convertAmount, getUsdRate } = useWallet();
   
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod>('code');
@@ -1186,7 +1188,7 @@ export default function PaymentRequestScreen() {
   );
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <SafeAreaView style={styles.safeArea} edges={['top']}>
         <View style={styles.header}>
           <TouchableOpacity
@@ -1222,7 +1224,6 @@ export default function PaymentRequestScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.light.background,
   },
   safeArea: {
     flex: 1,

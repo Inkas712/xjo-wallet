@@ -34,6 +34,7 @@ import {
   Hash,
 } from 'lucide-react-native';
 import Colors from '@/constants/colors';
+import { useTheme } from '@/contexts/ThemeContext';
 
 const { width } = Dimensions.get('window');
 const SCAN_FRAME_SIZE = width * 0.7;
@@ -49,6 +50,7 @@ interface ScannedPaymentData {
 
 export default function PaymentsScreen() {
   const router = useRouter();
+  const { colors, isDark } = useTheme();
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('nickname');
   const [recipient, setRecipient] = useState('');
   const [amount, setAmount] = useState('');
@@ -100,9 +102,9 @@ export default function PaymentsScreen() {
 
   const getIcon = () => {
     switch (paymentMethod) {
-      case 'nickname': return <User size={20} color={Colors.light.textMuted} />;
-      case 'phone': return <Phone size={20} color={Colors.light.textMuted} />;
-      case 'card': return <CreditCard size={20} color={Colors.light.textMuted} />;
+      case 'nickname': return <User size={20} color={colors.textMuted} />;
+      case 'phone': return <Phone size={20} color={colors.textMuted} />;
+      case 'card': return <CreditCard size={20} color={colors.textMuted} />;
     }
   };
 
@@ -555,7 +557,7 @@ export default function PaymentsScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <SafeAreaView edges={['top']} style={styles.safeArea}>
         <KeyboardAvoidingView
           style={styles.keyboardView}
@@ -567,8 +569,8 @@ export default function PaymentsScreen() {
                 <Text style={styles.headerLogoText}>XJO</Text>
               </View>
               <View>
-                <Text style={styles.title}>Send Payment</Text>
-                <Text style={styles.subtitle}>Fast & secure with XJO</Text>
+                <Text style={[styles.title, { color: colors.text }]}>Send Payment</Text>
+                <Text style={[styles.subtitle, { color: colors.textSecondary }]}>Fast & secure with XJO</Text>
               </View>
             </View>
             <TouchableOpacity 
@@ -734,7 +736,6 @@ export default function PaymentsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.light.background,
   },
   safeArea: {
     flex: 1,

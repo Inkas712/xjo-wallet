@@ -25,6 +25,7 @@ import {
   Plane,
 } from 'lucide-react-native';
 import Colors from '@/constants/colors';
+import { useTheme } from '@/contexts/ThemeContext';
 import { mockProducts } from '@/mocks/products';
 
 const getIcon = (iconName: string, size: number = 32) => {
@@ -44,6 +45,7 @@ const getIcon = (iconName: string, size: number = 32) => {
 
 export default function ProductDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
+  const { colors } = useTheme();
   const product = mockProducts.find(p => p.id === id) || mockProducts[0];
 
   
@@ -245,12 +247,13 @@ export default function ProductDetailsScreen() {
   );
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <Stack.Screen
         options={{
           title: product.name,
-          headerStyle: { backgroundColor: Colors.light.background },
-          headerTintColor: Colors.light.primary,
+          headerStyle: { backgroundColor: colors.background },
+          headerTintColor: colors.primary,
+          headerTitleStyle: { color: colors.text },
         }}
       />
 
@@ -300,7 +303,6 @@ export default function ProductDetailsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.light.background,
   },
   scrollView: {
     flex: 1,

@@ -35,8 +35,8 @@ import {
   LineChart,
   CandlestickChart,
 } from 'lucide-react-native';
-import Colors from '@/constants/colors';
 import { useAuth } from '@/contexts/AuthContext';
+import { useTheme } from '@/contexts/ThemeContext';
 import { useWallet, CURRENCY_INFO } from '@/contexts/WalletContext';
 import { mockTransactions } from '@/mocks/transactions';
 import { CryptoCompareAPI } from '@/services/crypto';
@@ -53,6 +53,7 @@ const CRYPTO_SYMBOLS = ['BTC', 'ETH', 'SOL', 'USDT', 'BNB'];
 export default function HomeScreen() {
   const router = useRouter();
   const { user } = useAuth();
+  const { colors, isDark } = useTheme();
   const { totalBalanceUsd, balances, getUsdRate, transactions: walletTransactions } = useWallet();
   const queryClient = useQueryClient();
   
@@ -153,7 +154,7 @@ export default function HomeScreen() {
         <View style={styles.chartWrapper}>
           {renderChartTypeToggle()}
           <View style={[styles.chartContainer, styles.chartLoadingContainer]}>
-            <ActivityIndicator size="small" color={Colors.light.primary} />
+            <ActivityIndicator size="small" color={colors.primary} />
           </View>
           {renderTimeFilters()}
         </View>
@@ -187,6 +188,9 @@ export default function HomeScreen() {
       return `${val.toFixed(2)}`;
     };
 
+    const positiveColor = colors.primary;
+    const negativeColor = isDark ? '#F4A6A3' : '#FF6B6B';
+
     const renderLineChart = () => (
       <>
         <LinearGradient
@@ -218,7 +222,7 @@ export default function HomeScreen() {
                   left: prevPoint.x,
                   top: prevPoint.y,
                   width: lineLength,
-                  backgroundColor: isPositive ? Colors.light.primary : '#F4A6A3',
+                  backgroundColor: isPositive ? positiveColor : negativeColor,
                   transform: [{ rotate: `${angle}rad` }],
                   transformOrigin: 'left center',
                 },
@@ -233,15 +237,15 @@ export default function HomeScreen() {
             { 
               left: points[points.length - 1].x - 6, 
               top: points[points.length - 1].y - 6,
-              backgroundColor: isPositive ? Colors.light.primary : '#F4A6A3',
-              shadowColor: isPositive ? Colors.light.primary : '#F4A6A3',
+              backgroundColor: isPositive ? positiveColor : negativeColor,
+              shadowColor: isPositive ? positiveColor : negativeColor,
             },
           ]}
         >
           <View style={styles.chartEndDotInner} />
         </View>
         
-        <View style={[styles.chartEndPriceBadge, { top: points[points.length - 1].y - 12, right: 0 }]}>
+        <View style={[styles.chartEndPriceBadge, { top: points[points.length - 1].y - 12, right: 0, backgroundColor: colors.primaryDark }]}>
           <Text style={styles.chartEndPriceText}>{formatPrice(lastValue)}</Text>
         </View>
       </>
@@ -271,7 +275,7 @@ export default function HomeScreen() {
                       left: x + candleWidth / 2 - 0.5,
                       top: highY,
                       height: lowY - highY,
-                      backgroundColor: isBullish ? Colors.light.primary : '#F4A6A3',
+                      backgroundColor: isBullish ? positiveColor : negativeColor,
                     },
                   ]}
                 />
@@ -283,14 +287,14 @@ export default function HomeScreen() {
                       top: bodyTop,
                       width: candleWidth,
                       height: bodyHeight,
-                      backgroundColor: isBullish ? Colors.light.primary : '#F4A6A3',
+                      backgroundColor: isBullish ? positiveColor : negativeColor,
                     },
                   ]}
                 />
               </View>
             );
           })}
-          <View style={[styles.chartEndPriceBadge, { top: points[points.length - 1].y - 12, right: 0 }]}>
+          <View style={[styles.chartEndPriceBadge, { top: points[points.length - 1].y - 12, right: 0, backgroundColor: colors.primaryDark }]}>
             <Text style={styles.chartEndPriceText}>{formatPrice(lastValue)}</Text>
           </View>
         </>
@@ -301,8 +305,8 @@ export default function HomeScreen() {
       <View style={styles.chartWrapper}>
         {renderChartTypeToggle()}
         <View style={styles.chartPriceLabels}>
-          <Text style={styles.chartPriceMax}>{formatPrice(maxValue)}</Text>
-          <Text style={styles.chartPriceMin}>{formatPrice(minValue)}</Text>
+          <Text style={[styles.chartPriceLabel, { color: colors.textMuted, backgroundColor: colors.card }]}>{formatPrice(maxValue)}</Text>
+          <Text style={[styles.chartPriceLabel, { color: colors.textMuted, backgroundColor: colors.card }]}>{formatPrice(minValue)}</Text>
         </View>
         
         <View style={styles.chartContainer}>
@@ -323,34 +327,34 @@ export default function HomeScreen() {
   const renderChartTypeToggle = () => (
     <View style={styles.chartTypeToggle}>
       <TouchableOpacity
-        style={[styles.chartTypeButton, chartType === 'line' && styles.chartTypeButtonActive]}
+        style={[styles.chartTypeButton, { backgroundColor: colors.backgroundSecondary }, chartType === 'line' && { backgroundColor: colors.primary }]}
         onPress={() => {
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
           setChartType('line');
         }}
       >
-        <LineChart size={16} color={chartType === 'line' ? '#FFFFFF' : Colors.light.textMuted} />
+        <LineChart size={16} color={chartType === 'line' ? '#FFFFFF' : colors.textMuted} />
       </TouchableOpacity>
       <TouchableOpacity
-        style={[styles.chartTypeButton, chartType === 'candle' && styles.chartTypeButtonActive]}
+        style={[styles.chartTypeButton, { backgroundColor: colors.backgroundSecondary }, chartType === 'candle' && { backgroundColor: colors.primary }]}
         onPress={() => {
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
           setChartType('candle');
         }}
       >
-        <CandlestickChart size={16} color={chartType === 'candle' ? '#FFFFFF' : Colors.light.textMuted} />
+        <CandlestickChart size={16} color={chartType === 'candle' ? '#FFFFFF' : colors.textMuted} />
       </TouchableOpacity>
     </View>
   );
 
   const renderTimeFilters = () => (
-    <View style={styles.timeFilters}>
+    <View style={[styles.timeFilters, { backgroundColor: colors.backgroundSecondary }]}>
       {(['1D', '1W', '1M', '1Y'] as TimeFilter[]).map((filter) => (
         <TouchableOpacity
           key={filter}
           style={[
             styles.timeFilterButton,
-            selectedTimeFilter === filter && styles.timeFilterButtonActive,
+            selectedTimeFilter === filter && { backgroundColor: colors.primary },
           ]}
           onPress={() => {
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -360,6 +364,7 @@ export default function HomeScreen() {
           <Text
             style={[
               styles.timeFilterText,
+              { color: colors.textMuted },
               selectedTimeFilter === filter && styles.timeFilterTextActive,
             ]}
           >
@@ -371,7 +376,7 @@ export default function HomeScreen() {
   );
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <SafeAreaView edges={['top']} style={styles.safeArea}>
         <View style={styles.header}>
           <TouchableOpacity 
@@ -391,15 +396,15 @@ export default function HomeScreen() {
                   {user?.fullName?.charAt(0)?.toUpperCase() || 'U'}
                 </Text>
               </LinearGradient>
-              <View style={styles.onlineIndicator} />
+              <View style={[styles.onlineIndicator, { borderColor: colors.background }]} />
             </View>
             <View>
-              <Text style={styles.greeting}>{getGreeting()}</Text>
-              <Text style={styles.userName}>{user?.fullName?.split(' ')[0] || 'User'}</Text>
+              <Text style={[styles.greeting, { color: colors.textSecondary }]}>{getGreeting()}</Text>
+              <Text style={[styles.userName, { color: colors.text }]}>{user?.fullName?.split(' ')[0] || 'User'}</Text>
             </View>
           </TouchableOpacity>
           <TouchableOpacity 
-            style={styles.notificationButton}
+            style={[styles.notificationButton, { backgroundColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.05)' }]}
             onPress={() => {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
               Alert.alert(
@@ -410,8 +415,8 @@ export default function HomeScreen() {
             }}
             activeOpacity={0.7}
           >
-            <Bell size={22} color={Colors.light.primary} />
-            <View style={styles.notificationBadge} />
+            <Bell size={22} color={colors.primary} />
+            <View style={[styles.notificationBadge, { backgroundColor: colors.error }]} />
           </TouchableOpacity>
         </View>
 
@@ -423,7 +428,7 @@ export default function HomeScreen() {
             <RefreshControl
               refreshing={refreshing}
               onRefresh={onRefresh}
-              tintColor={Colors.light.primary}
+              tintColor={colors.primary}
             />
           }
         >
@@ -499,7 +504,7 @@ export default function HomeScreen() {
                 >
                   <Send size={22} color="#FFFFFF" />
                 </LinearGradient>
-                <Text style={styles.quickActionLabel}>Send</Text>
+                <Text style={[styles.quickActionLabel, { color: colors.textSecondary }]}>Send</Text>
               </TouchableOpacity>
 
               <TouchableOpacity 
@@ -513,7 +518,7 @@ export default function HomeScreen() {
                 >
                   <Download size={22} color="#FFFFFF" />
                 </LinearGradient>
-                <Text style={styles.quickActionLabel}>Receive</Text>
+                <Text style={[styles.quickActionLabel, { color: colors.textSecondary }]}>Receive</Text>
               </TouchableOpacity>
 
               <TouchableOpacity 
@@ -527,7 +532,7 @@ export default function HomeScreen() {
                 >
                   <ScanLine size={22} color="#FFFFFF" />
                 </LinearGradient>
-                <Text style={styles.quickActionLabel}>Scan QR</Text>
+                <Text style={[styles.quickActionLabel, { color: colors.textSecondary }]}>Scan QR</Text>
               </TouchableOpacity>
 
               <TouchableOpacity 
@@ -541,27 +546,27 @@ export default function HomeScreen() {
                 >
                   <Sparkles size={22} color="#FFFFFF" />
                 </LinearGradient>
-                <Text style={styles.quickActionLabel}>Assets</Text>
+                <Text style={[styles.quickActionLabel, { color: colors.textSecondary }]}>Assets</Text>
               </TouchableOpacity>
             </Animated.View>
           </View>
 
           <View style={styles.assetSection}>
             <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Bitcoin</Text>
+              <Text style={[styles.sectionTitle, { color: colors.text }]}>Bitcoin</Text>
               <TouchableOpacity 
                 style={styles.seeAllButton}
                 onPress={() => router.push('/all-assets')}
               >
-                <Text style={styles.seeAllText}>See All</Text>
-                <ChevronRight size={16} color={Colors.light.primary} />
+                <Text style={[styles.seeAllText, { color: colors.primary }]}>See All</Text>
+                <ChevronRight size={16} color={colors.primary} />
               </TouchableOpacity>
             </View>
 
-            <View style={styles.assetCard}>
+            <View style={[styles.assetCard, { backgroundColor: colors.cardBg, borderColor: colors.cardBorder }]}>
               {pricesLoading ? (
                 <View style={styles.loadingContainer}>
-                  <ActivityIndicator size="large" color={Colors.light.primary} />
+                  <ActivityIndicator size="large" color={colors.primary} />
                 </View>
               ) : primaryAsset ? (
                 <>
@@ -569,28 +574,28 @@ export default function HomeScreen() {
                     <View style={styles.assetLeft}>
                       <Image
                         source={{ uri: primaryAsset.imageUrl }}
-                        style={styles.assetLogo}
+                        style={[styles.assetLogo, { backgroundColor: colors.backgroundSecondary }]}
                         contentFit="contain"
                       />
                       <View>
-                        <Text style={styles.assetName}>{primaryAsset.name}</Text>
-                        <Text style={styles.assetSymbol}>{primaryAsset.symbol}</Text>
+                        <Text style={[styles.assetName, { color: colors.text }]}>{primaryAsset.name}</Text>
+                        <Text style={[styles.assetSymbol, { color: colors.textSecondary }]}>{primaryAsset.symbol}</Text>
                       </View>
                     </View>
                     <View style={styles.assetRight}>
-                      <Text style={styles.assetValue}>{formatCurrency(primaryAsset.price)}</Text>
+                      <Text style={[styles.assetValue, { color: colors.text }]}>{formatCurrency(primaryAsset.price)}</Text>
                       <View style={[
                         styles.assetChange,
                         primaryAsset.change24h >= 0 ? styles.changePositive : styles.changeNegative,
                       ]}>
                         {primaryAsset.change24h >= 0 ? (
-                          <TrendingUp size={12} color={Colors.light.success} />
+                          <TrendingUp size={12} color={colors.success} />
                         ) : (
-                          <TrendingDown size={12} color={Colors.light.error} />
+                          <TrendingDown size={12} color={colors.error} />
                         )}
                         <Text style={[
                           styles.assetChangeText,
-                          primaryAsset.change24h >= 0 ? styles.changeTextPositive : styles.changeTextNegative,
+                          { color: primaryAsset.change24h >= 0 ? colors.success : colors.error },
                         ]}>
                           {Math.abs(primaryAsset.change24h).toFixed(2)}%
                         </Text>
@@ -600,7 +605,7 @@ export default function HomeScreen() {
                   {renderMiniChart()}
                 </>
               ) : (
-                <Text style={styles.errorText}>Failed to load data</Text>
+                <Text style={[styles.errorText, { color: colors.textSecondary }]}>Failed to load data</Text>
               )}
             </View>
           </View>
@@ -608,9 +613,9 @@ export default function HomeScreen() {
           {balances.filter(b => b.amount > 0).length > 0 && (
             <View style={styles.holdingsSection}>
               <View style={styles.sectionHeader}>
-                <Text style={styles.sectionTitle}>Holdings</Text>
+                <Text style={[styles.sectionTitle, { color: colors.text }]}>Holdings</Text>
               </View>
-              <View style={styles.holdingsList}>
+              <View style={[styles.holdingsList, { backgroundColor: colors.cardBg, borderColor: colors.cardBorder }]}>
                 {balances.filter(b => b.amount > 0).map((bal, index, arr) => {
                   const info = CURRENCY_INFO[bal.currency];
                   const usdVal = bal.amount * getUsdRate(bal.currency);
@@ -619,22 +624,23 @@ export default function HomeScreen() {
                       key={bal.currency}
                       style={[
                         styles.holdingItem,
+                        { borderBottomColor: colors.borderLight },
                         index === arr.length - 1 && styles.holdingItemLast,
                       ]}
                     >
                       <View style={styles.holdingLeft}>
-                        <Image source={{ uri: info.icon }} style={styles.holdingIcon} contentFit="contain" />
+                        <Image source={{ uri: info.icon }} style={[styles.holdingIcon, { backgroundColor: colors.backgroundSecondary }]} contentFit="contain" />
                         <View>
-                          <Text style={styles.holdingName}>{info.name}</Text>
-                          <Text style={styles.holdingSymbol}>{bal.currency}</Text>
+                          <Text style={[styles.holdingName, { color: colors.text }]}>{info.name}</Text>
+                          <Text style={[styles.holdingSymbol, { color: colors.textMuted }]}>{bal.currency}</Text>
                         </View>
                       </View>
                       <View style={styles.holdingRight}>
-                        <Text style={styles.holdingAmount}>
+                        <Text style={[styles.holdingAmount, { color: colors.text }]}>
                           {bal.currency === 'USD' ? `${bal.amount.toFixed(2)}` : bal.amount.toFixed(8)}
                         </Text>
                         {bal.currency !== 'USD' && (
-                          <Text style={styles.holdingUsd}>${usdVal.toFixed(2)}</Text>
+                          <Text style={[styles.holdingUsd, { color: colors.textMuted }]}>${usdVal.toFixed(2)}</Text>
                         )}
                       </View>
                     </View>
@@ -646,17 +652,17 @@ export default function HomeScreen() {
 
           <View style={styles.transactionsSection}>
             <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Recent Activity</Text>
+              <Text style={[styles.sectionTitle, { color: colors.text }]}>Recent Activity</Text>
               <TouchableOpacity 
                 style={styles.seeAllButton}
                 onPress={() => router.push('/transactions')}
               >
-                <Text style={styles.seeAllText}>See All</Text>
-                <ChevronRight size={16} color={Colors.light.primary} />
+                <Text style={[styles.seeAllText, { color: colors.primary }]}>See All</Text>
+                <ChevronRight size={16} color={colors.primary} />
               </TouchableOpacity>
             </View>
 
-            <View style={styles.transactionsList}>
+            <View style={[styles.transactionsList, { backgroundColor: colors.cardBg, borderColor: colors.cardBorder }]}>
               {(walletTransactions.length > 0 ? walletTransactions : mockTransactions).slice(0, 4).map((tx, index) => {
                 const isWalletTx = 'counterparty' in tx;
                 const txType = tx.type === 'received' ? 'received' : 'sent';
@@ -669,6 +675,7 @@ export default function HomeScreen() {
                     key={tx.id} 
                     style={[
                       styles.transactionItem,
+                      { borderBottomColor: colors.borderLight },
                       index === 3 && styles.transactionItemLast,
                     ]}
                     activeOpacity={0.7}
@@ -678,14 +685,14 @@ export default function HomeScreen() {
                       txType === 'received' ? styles.iconReceived : styles.iconSent,
                     ]}>
                       {txType === 'received' ? (
-                        <ArrowDownLeft size={18} color={Colors.light.success} />
+                        <ArrowDownLeft size={18} color={colors.success} />
                       ) : (
-                        <ArrowUpRight size={18} color={Colors.light.error} />
+                        <ArrowUpRight size={18} color={colors.error} />
                       )}
                     </View>
                     <View style={styles.transactionDetails}>
-                      <Text style={styles.transactionName}>{displayName}</Text>
-                      <Text style={styles.transactionDate}>
+                      <Text style={[styles.transactionName, { color: colors.text }]}>{displayName}</Text>
+                      <Text style={[styles.transactionDate, { color: colors.textMuted }]}>
                         {new Date(tx.date).toLocaleDateString('en-US', {
                           month: 'short',
                           day: 'numeric',
@@ -696,7 +703,7 @@ export default function HomeScreen() {
                     </View>
                     <Text style={[
                       styles.transactionAmount,
-                      txType === 'received' ? styles.amountReceived : styles.amountSent,
+                      { color: txType === 'received' ? colors.success : colors.textSecondary },
                     ]}>
                       {txType === 'received' ? '+' : '-'}{txCurrency === 'USD' ? '$' : ''}{tx.amount}{txCurrency !== 'USD' ? (' ' + txCurrency) : ''}
                     </Text>
@@ -716,7 +723,6 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.light.background,
   },
   safeArea: {
     flex: 1,
@@ -757,23 +763,19 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     backgroundColor: '#4ADE80',
     borderWidth: 2,
-    borderColor: '#0D1117',
   },
   greeting: {
     fontSize: 13,
-    color: Colors.light.textSecondary,
     marginBottom: 2,
   },
   userName: {
     fontSize: 20,
     fontWeight: '700' as const,
-    color: '#FFFFFF',
   },
   notificationButton: {
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: 'rgba(255,255,255,0.08)',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -784,7 +786,6 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: Colors.light.error,
   },
   scrollView: {
     flex: 1,
@@ -926,7 +927,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: Colors.light.primary,
+    shadowColor: '#9DC183',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.25,
     shadowRadius: 8,
@@ -935,7 +936,6 @@ const styles = StyleSheet.create({
   quickActionLabel: {
     fontSize: 13,
     fontWeight: '600' as const,
-    color: 'rgba(255,255,255,0.8)',
   },
   assetSection: {
     paddingHorizontal: 20,
@@ -950,7 +950,6 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: '700' as const,
-    color: '#FFFFFF',
   },
   seeAllButton: {
     flexDirection: 'row',
@@ -960,14 +959,11 @@ const styles = StyleSheet.create({
   seeAllText: {
     fontSize: 14,
     fontWeight: '600' as const,
-    color: Colors.light.primary,
   },
   assetCard: {
-    backgroundColor: 'rgba(255,255,255,0.05)',
     borderRadius: 24,
     padding: 20,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.08)',
   },
   assetRow: {
     flexDirection: 'row',
@@ -984,17 +980,14 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: Colors.light.backgroundSecondary,
   },
   assetName: {
     fontSize: 16,
     fontWeight: '600' as const,
-    color: '#FFFFFF',
     marginBottom: 2,
   },
   assetSymbol: {
     fontSize: 13,
-    color: Colors.light.textSecondary,
   },
   assetRight: {
     alignItems: 'flex-end',
@@ -1002,7 +995,6 @@ const styles = StyleSheet.create({
   assetValue: {
     fontSize: 17,
     fontWeight: '700' as const,
-    color: '#FFFFFF',
     marginBottom: 4,
   },
   assetChange: {
@@ -1023,12 +1015,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '600' as const,
   },
-  changeTextPositive: {
-    color: Colors.light.success,
-  },
-  changeTextNegative: {
-    color: Colors.light.error,
-  },
   chartWrapper: {
     marginTop: 12,
     position: 'relative',
@@ -1042,20 +1028,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     zIndex: 10,
   },
-  chartPriceMax: {
+  chartPriceLabel: {
     fontSize: 10,
     fontWeight: '600' as const,
-    color: Colors.light.textMuted,
-    backgroundColor: Colors.light.card,
-    paddingHorizontal: 4,
-    paddingVertical: 2,
-    borderRadius: 4,
-  },
-  chartPriceMin: {
-    fontSize: 10,
-    fontWeight: '600' as const,
-    color: Colors.light.textMuted,
-    backgroundColor: Colors.light.card,
     paddingHorizontal: 4,
     paddingVertical: 2,
     borderRadius: 4,
@@ -1112,7 +1087,6 @@ const styles = StyleSheet.create({
   },
   chartEndPriceBadge: {
     position: 'absolute',
-    backgroundColor: Colors.light.primaryDark,
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 6,
@@ -1134,7 +1108,6 @@ const styles = StyleSheet.create({
   },
   errorText: {
     textAlign: 'center',
-    color: Colors.light.textSecondary,
     padding: 20,
   },
   changeNegativeText: {
@@ -1144,7 +1117,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginLeft: 40,
-    backgroundColor: Colors.light.backgroundSecondary,
     borderRadius: 12,
     padding: 4,
   },
@@ -1154,18 +1126,9 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
   },
-  timeFilterButtonActive: {
-    backgroundColor: Colors.light.primary,
-    shadowColor: Colors.light.primary,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 3,
-  },
   timeFilterText: {
     fontSize: 13,
     fontWeight: '600' as const,
-    color: Colors.light.textMuted,
   },
   timeFilterTextActive: {
     color: '#FFFFFF',
@@ -1175,11 +1138,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   transactionsList: {
-    backgroundColor: 'rgba(255,255,255,0.05)',
     borderRadius: 24,
     overflow: 'hidden',
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.08)',
   },
   transactionItem: {
     flexDirection: 'row',
@@ -1187,7 +1148,6 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     paddingHorizontal: 18,
     borderBottomWidth: 1,
-    borderBottomColor: Colors.light.borderLight,
   },
   transactionItemLast: {
     borderBottomWidth: 0,
@@ -1212,33 +1172,23 @@ const styles = StyleSheet.create({
   transactionName: {
     fontSize: 15,
     fontWeight: '600' as const,
-    color: '#FFFFFF',
     marginBottom: 3,
   },
   transactionDate: {
     fontSize: 12,
-    color: Colors.light.textMuted,
   },
   transactionAmount: {
     fontSize: 16,
     fontWeight: '700' as const,
-  },
-  amountReceived: {
-    color: Colors.light.success,
-  },
-  amountSent: {
-    color: 'rgba(255,255,255,0.7)',
   },
   holdingsSection: {
     paddingHorizontal: 20,
     marginBottom: 24,
   },
   holdingsList: {
-    backgroundColor: 'rgba(255,255,255,0.05)',
     borderRadius: 24,
     overflow: 'hidden',
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.08)',
   },
   holdingItem: {
     flexDirection: 'row',
@@ -1247,7 +1197,6 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     paddingHorizontal: 18,
     borderBottomWidth: 1,
-    borderBottomColor: Colors.light.borderLight,
   },
   holdingItemLast: {
     borderBottomWidth: 0,
@@ -1261,17 +1210,14 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: Colors.light.backgroundSecondary,
   },
   holdingName: {
     fontSize: 15,
     fontWeight: '600' as const,
-    color: '#FFFFFF',
     marginBottom: 2,
   },
   holdingSymbol: {
     fontSize: 12,
-    color: Colors.light.textMuted,
   },
   holdingRight: {
     alignItems: 'flex-end',
@@ -1279,12 +1225,10 @@ const styles = StyleSheet.create({
   holdingAmount: {
     fontSize: 15,
     fontWeight: '700' as const,
-    color: '#FFFFFF',
     marginBottom: 2,
   },
   holdingUsd: {
     fontSize: 12,
-    color: Colors.light.textMuted,
   },
   bottomSpacer: {
     height: 24,
@@ -1301,10 +1245,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: Colors.light.backgroundSecondary,
-  },
-  chartTypeButtonActive: {
-    backgroundColor: Colors.light.primary,
   },
   candleWick: {
     position: 'absolute',

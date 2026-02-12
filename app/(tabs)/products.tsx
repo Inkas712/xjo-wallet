@@ -25,14 +25,14 @@ import {
   Target,
   CircleDot,
 } from 'lucide-react-native';
-import Colors from '@/constants/colors';
+import { useTheme } from '@/contexts/ThemeContext';
 import { mockProducts } from '@/mocks/products';
 
 const { width } = Dimensions.get('window');
 const CARD_WIDTH = width * 0.72;
 const CARD_SPACING = 16;
 
-const getIcon = (iconName: string, size: number = 24, color: string = Colors.light.primary) => {
+const getIcon = (iconName: string, size: number = 24, color: string = '#9DC183') => {
   const iconProps = { size, color };
   switch (iconName) {
     case 'piggy-bank': return <PiggyBank {...iconProps} />;
@@ -56,6 +56,7 @@ const cardThemes = [
 
 export default function ProductsScreen() {
   const router = useRouter();
+  const { colors, isDark } = useTheme();
   const scrollX = useRef(new Animated.Value(0)).current;
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -164,7 +165,7 @@ export default function ProductsScreen() {
     return (
       <TouchableOpacity
         key={product.id}
-        style={styles.productItem}
+        style={[styles.productItem, { backgroundColor: colors.cardBg, borderColor: colors.cardBorder }]}
         onPress={() => handleProductPress(product.id)}
         activeOpacity={0.8}
       >
@@ -172,8 +173,8 @@ export default function ProductsScreen() {
           {getIcon(product.icon, 22, theme.bg)}
         </View>
         <View style={styles.productItemContent}>
-          <Text style={styles.productItemTitle}>{product.name}</Text>
-          <Text style={styles.productItemDesc} numberOfLines={1}>
+          <Text style={[styles.productItemTitle, { color: colors.text }]}>{product.name}</Text>
+          <Text style={[styles.productItemDesc, { color: colors.textSecondary }]} numberOfLines={1}>
             {product.shortDescription}
           </Text>
         </View>
@@ -185,7 +186,7 @@ export default function ProductsScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <SafeAreaView edges={['top']} style={styles.safeArea}>
         <ScrollView
           style={styles.scrollView}
@@ -195,51 +196,52 @@ export default function ProductsScreen() {
           <View style={styles.header}>
             <View style={styles.headerTop}>
               <View>
-                <Text style={styles.headerLabel}>XJO Products</Text>
-                <Text style={styles.headerTitle}>Financial Solutions</Text>
+                <Text style={[styles.headerLabel, { color: colors.primary }]}>XJO Products</Text>
+                <Text style={[styles.headerTitle, { color: colors.text }]}>Financial Solutions</Text>
               </View>
-              <TouchableOpacity style={styles.headerAction}>
-                <Gift size={20} color={Colors.light.primary} />
+              <TouchableOpacity style={[styles.headerAction, { backgroundColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.05)' }]}>
+                <Gift size={20} color={colors.primary} />
               </TouchableOpacity>
             </View>
-            <Text style={styles.headerSubtitle}>
+            <Text style={[styles.headerSubtitle, { color: colors.textSecondary }]}>
               Interest-free products designed for your financial goals
             </Text>
           </View>
 
-          <View style={styles.quickStats}>
+          <View style={[styles.quickStats, { backgroundColor: colors.cardBg, borderColor: colors.cardBorder }]}>
             <View style={styles.quickStatItem}>
               <View style={[styles.quickStatIcon, { backgroundColor: '#7BA05B15' }]}>
                 <Target size={18} color="#7BA05B" />
               </View>
-              <Text style={styles.quickStatValue}>6</Text>
-              <Text style={styles.quickStatLabel}>Products</Text>
+              <Text style={[styles.quickStatValue, { color: colors.text }]}>6</Text>
+              <Text style={[styles.quickStatLabel, { color: colors.textMuted }]}>Products</Text>
             </View>
             <View style={styles.quickStatItem}>
               <View style={[styles.quickStatIcon, { backgroundColor: '#9DC18315' }]}>
                 <Zap size={18} color="#9DC183" />
               </View>
-              <Text style={styles.quickStatValue}>0%</Text>
-              <Text style={styles.quickStatLabel}>Interest</Text>
+              <Text style={[styles.quickStatValue, { color: colors.text }]}>0%</Text>
+              <Text style={[styles.quickStatLabel, { color: colors.textMuted }]}>Interest</Text>
             </View>
             <View style={styles.quickStatItem}>
               <View style={[styles.quickStatIcon, { backgroundColor: '#6B8E4E15' }]}>
                 <Sparkles size={18} color="#6B8E4E" />
               </View>
-              <Text style={styles.quickStatValue}>24h</Text>
-              <Text style={styles.quickStatLabel}>Fast Approval</Text>
+              <Text style={[styles.quickStatValue, { color: colors.text }]}>24h</Text>
+              <Text style={[styles.quickStatLabel, { color: colors.textMuted }]}>Fast Approval</Text>
             </View>
           </View>
 
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Featured</Text>
+            <Text style={[styles.sectionTitle, { color: colors.text }]}>Featured</Text>
             <View style={styles.pagination}>
               {featuredProducts.map((_, i) => (
                 <View
                   key={i}
                   style={[
                     styles.paginationDot,
-                    activeIndex === i && styles.paginationDotActive,
+                    { backgroundColor: colors.border },
+                    activeIndex === i && [styles.paginationDotActive, { backgroundColor: colors.primary }],
                   ]}
                 />
               ))}
@@ -259,24 +261,24 @@ export default function ProductsScreen() {
           </Animated.ScrollView>
 
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>More Products</Text>
-            <Text style={styles.sectionCount}>{otherProducts.length} available</Text>
+            <Text style={[styles.sectionTitle, { color: colors.text }]}>More Products</Text>
+            <Text style={[styles.sectionCount, { color: colors.textMuted }]}>{otherProducts.length} available</Text>
           </View>
 
           <View style={styles.productsList}>
             {otherProducts.map((product, index) => renderProductItem(product, index))}
           </View>
 
-          <View style={styles.ctaCard}>
+          <View style={[styles.ctaCard, { backgroundColor: colors.cardBg, borderColor: colors.cardBorder }]}>
             <View style={styles.ctaContent}>
-              <View style={styles.ctaIconContainer}>
-                <CircleDot size={24} color={Colors.light.primary} />
+              <View style={[styles.ctaIconContainer, { backgroundColor: `${colors.primary}15` }]}>
+                <CircleDot size={24} color={colors.primary} />
               </View>
-              <Text style={styles.ctaTitle}>Need Help Choosing?</Text>
-              <Text style={styles.ctaText}>
+              <Text style={[styles.ctaTitle, { color: colors.text }]}>Need Help Choosing?</Text>
+              <Text style={[styles.ctaText, { color: colors.textSecondary }]}>
                 Our advisors can help you find the perfect product for your needs
               </Text>
-              <TouchableOpacity style={styles.ctaButton} activeOpacity={0.8}>
+              <TouchableOpacity style={[styles.ctaButton, { backgroundColor: colors.primaryDark }]} activeOpacity={0.8}>
                 <Text style={styles.ctaButtonText}>Talk to an Advisor</Text>
               </TouchableOpacity>
             </View>
@@ -290,7 +292,6 @@ export default function ProductsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.light.background,
   },
   safeArea: {
     flex: 1,
@@ -315,7 +316,6 @@ const styles = StyleSheet.create({
   headerLabel: {
     fontSize: 13,
     fontWeight: '600' as const,
-    color: Colors.light.primary,
     textTransform: 'uppercase',
     letterSpacing: 1,
     marginBottom: 4,
@@ -323,30 +323,25 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 28,
     fontWeight: '700' as const,
-    color: '#FFFFFF',
   },
   headerAction: {
     width: 44,
     height: 44,
     borderRadius: 14,
-    backgroundColor: 'rgba(255,255,255,0.08)',
     alignItems: 'center',
     justifyContent: 'center',
   },
   headerSubtitle: {
     fontSize: 15,
-    color: Colors.light.textSecondary,
     lineHeight: 22,
   },
   quickStats: {
     flexDirection: 'row',
     marginHorizontal: 24,
     marginBottom: 28,
-    backgroundColor: 'rgba(255,255,255,0.05)',
     borderRadius: 20,
     padding: 16,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.08)',
   },
   quickStatItem: {
     flex: 1,
@@ -363,12 +358,10 @@ const styles = StyleSheet.create({
   quickStatValue: {
     fontSize: 18,
     fontWeight: '700' as const,
-    color: '#FFFFFF',
     marginBottom: 2,
   },
   quickStatLabel: {
     fontSize: 12,
-    color: Colors.light.textMuted,
     fontWeight: '500' as const,
   },
   sectionHeader: {
@@ -381,11 +374,9 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 20,
     fontWeight: '700' as const,
-    color: '#FFFFFF',
   },
   sectionCount: {
     fontSize: 13,
-    color: Colors.light.textMuted,
     fontWeight: '500' as const,
   },
   pagination: {
@@ -396,11 +387,9 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: Colors.light.border,
   },
   paginationDotActive: {
     width: 24,
-    backgroundColor: Colors.light.primary,
   },
   featuredList: {
     paddingHorizontal: 24,
@@ -544,11 +533,9 @@ const styles = StyleSheet.create({
   productItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,0.05)',
     borderRadius: 16,
     padding: 16,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.08)',
   },
   productItemIcon: {
     width: 48,
@@ -564,12 +551,10 @@ const styles = StyleSheet.create({
   productItemTitle: {
     fontSize: 16,
     fontWeight: '600' as const,
-    color: '#FFFFFF',
     marginBottom: 4,
   },
   productItemDesc: {
     fontSize: 13,
-    color: Colors.light.textSecondary,
   },
   productItemArrow: {
     width: 36,
@@ -580,11 +565,9 @@ const styles = StyleSheet.create({
   },
   ctaCard: {
     marginHorizontal: 24,
-    backgroundColor: 'rgba(255,255,255,0.05)',
     borderRadius: 24,
     overflow: 'hidden',
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.08)',
   },
   ctaContent: {
     padding: 24,
@@ -594,7 +577,6 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: `${Colors.light.primary}15`,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 16,
@@ -602,19 +584,16 @@ const styles = StyleSheet.create({
   ctaTitle: {
     fontSize: 18,
     fontWeight: '700' as const,
-    color: '#FFFFFF',
     marginBottom: 8,
     textAlign: 'center',
   },
   ctaText: {
     fontSize: 14,
-    color: Colors.light.textSecondary,
     textAlign: 'center',
     lineHeight: 20,
     marginBottom: 20,
   },
   ctaButton: {
-    backgroundColor: Colors.light.primaryDark,
     paddingHorizontal: 28,
     paddingVertical: 14,
     borderRadius: 14,

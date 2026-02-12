@@ -29,6 +29,7 @@ import {
   CandlestickChart,
 } from 'lucide-react-native';
 import Colors from '@/constants/colors';
+import { useTheme } from '@/contexts/ThemeContext';
 import { CryptoCompareAPI } from '@/services/crypto';
 
 const { width } = Dimensions.get('window');
@@ -42,6 +43,7 @@ export default function AssetDetailsScreen() {
   const { symbol } = useLocalSearchParams<{ symbol: string }>();
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { colors } = useTheme();
   
   const [selectedTimeFilter, setSelectedTimeFilter] = useState<TimeFilter>('1W');
   const [refreshing, setRefreshing] = useState(false);
@@ -328,12 +330,13 @@ export default function AssetDetailsScreen() {
 
   if (coinLoading) {
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, { backgroundColor: colors.background }]}>
         <Stack.Screen
           options={{
             title: symbol || 'Asset Details',
-            headerStyle: { backgroundColor: Colors.light.background },
-            headerTintColor: Colors.light.primary,
+            headerStyle: { backgroundColor: colors.background },
+            headerTintColor: colors.primary,
+            headerTitleStyle: { color: colors.text },
           }}
         />
         <View style={styles.loadingContainer}>
@@ -344,12 +347,13 @@ export default function AssetDetailsScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <Stack.Screen
         options={{
           title: coinData?.name || symbol || 'Asset Details',
-          headerStyle: { backgroundColor: Colors.light.background },
-          headerTintColor: Colors.light.primary,
+          headerStyle: { backgroundColor: colors.background },
+          headerTintColor: colors.primary,
+          headerTitleStyle: { color: colors.text },
         }}
       />
 
@@ -482,7 +486,6 @@ export default function AssetDetailsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.light.background,
   },
   loadingContainer: {
     flex: 1,
