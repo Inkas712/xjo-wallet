@@ -8,7 +8,7 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors.light.primaryDark,
+        tabBarActiveTintColor: Colors.light.primary,
         tabBarInactiveTintColor: Colors.light.tabIconDefault,
         tabBarStyle: styles.tabBar,
         tabBarLabelStyle: styles.tabBarLabel,
@@ -56,12 +56,13 @@ export default function TabLayout() {
 
 const styles = StyleSheet.create({
   tabBar: {
-    backgroundColor: Colors.light.card,
-    borderTopWidth: 0,
+    backgroundColor: '#161B22',
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(255,255,255,0.06)',
     elevation: 20,
-    shadowColor: Colors.light.shadow,
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: -4 },
-    shadowOpacity: 1,
+    shadowOpacity: 0.3,
     shadowRadius: 16,
     height: Platform.OS === 'ios' ? 88 : 64,
     paddingBottom: Platform.OS === 'ios' ? 28 : 8,

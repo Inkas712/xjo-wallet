@@ -447,7 +447,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: '700' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
     marginBottom: 2,
   },
   subtitle: {
@@ -565,14 +565,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     marginTop: 20,
-    backgroundColor: Colors.light.card,
+    backgroundColor: 'rgba(255,255,255,0.05)',
     borderRadius: 16,
     padding: 16,
-    shadowColor: Colors.light.shadow,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 1,
-    shadowRadius: 12,
-    elevation: 4,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.08)',
   },
   actionButton: {
     alignItems: 'center',
@@ -604,7 +601,7 @@ const styles = StyleSheet.create({
   emptyTitle: {
     fontSize: 20,
     fontWeight: '600' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
     marginBottom: 8,
   },
   emptyDescription: {
@@ -633,11 +630,13 @@ const styles = StyleSheet.create({
     padding: 24,
   },
   modalContent: {
-    backgroundColor: Colors.light.card,
+    backgroundColor: '#1C2128',
     borderRadius: 24,
     padding: 24,
     width: '100%',
     maxWidth: 340,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.1)',
   },
   modalCloseButton: {
     position: 'absolute',
@@ -669,7 +668,7 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: 20,
     fontWeight: '700' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
     textAlign: 'center',
     marginBottom: 8,
   },
@@ -731,6 +730,6 @@ const styles = StyleSheet.create({
   detailValue: {
     fontSize: 14,
     fontWeight: '600' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
   },
 });

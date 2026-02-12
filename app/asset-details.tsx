@@ -333,7 +333,7 @@ export default function AssetDetailsScreen() {
           options={{
             title: symbol || 'Asset Details',
             headerStyle: { backgroundColor: Colors.light.background },
-            headerTintColor: Colors.light.primaryDark,
+            headerTintColor: Colors.light.primary,
           }}
         />
         <View style={styles.loadingContainer}>
@@ -349,7 +349,7 @@ export default function AssetDetailsScreen() {
         options={{
           title: coinData?.name || symbol || 'Asset Details',
           headerStyle: { backgroundColor: Colors.light.background },
-          headerTintColor: Colors.light.primaryDark,
+          headerTintColor: Colors.light.primary,
         }}
       />
 
@@ -498,15 +498,12 @@ const styles = StyleSheet.create({
   headerCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.light.card,
+    backgroundColor: 'rgba(255,255,255,0.05)',
     borderRadius: 20,
     padding: 20,
     marginBottom: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.06,
-    shadowRadius: 12,
-    elevation: 4,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.08)',
   },
   assetLogo: {
     width: 56,
@@ -521,7 +518,7 @@ const styles = StyleSheet.create({
   assetName: {
     fontSize: 20,
     fontWeight: '700' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
     marginBottom: 4,
   },
   assetSymbol: {
@@ -572,15 +569,12 @@ const styles = StyleSheet.create({
     letterSpacing: -1,
   },
   chartSection: {
-    backgroundColor: Colors.light.card,
+    backgroundColor: 'rgba(255,255,255,0.05)',
     borderRadius: 20,
     padding: 20,
     marginBottom: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.06,
-    shadowRadius: 12,
-    elevation: 4,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.08)',
   },
   chartHeader: {
     flexDirection: 'row',
@@ -591,7 +585,7 @@ const styles = StyleSheet.create({
   chartPrice: {
     fontSize: 24,
     fontWeight: '700' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
     marginBottom: 4,
   },
   chartChangeRow: {
@@ -678,14 +672,11 @@ const styles = StyleSheet.create({
   actionButton: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: Colors.light.card,
+    backgroundColor: 'rgba(255,255,255,0.05)',
     borderRadius: 16,
     padding: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.04,
-    shadowRadius: 8,
-    elevation: 2,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.08)',
   },
   actionButtonIcon: {
     width: 48,
@@ -698,23 +689,20 @@ const styles = StyleSheet.create({
   actionButtonLabel: {
     fontSize: 14,
     fontWeight: '600' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
   },
   statsCard: {
-    backgroundColor: Colors.light.card,
+    backgroundColor: 'rgba(255,255,255,0.05)',
     borderRadius: 20,
     padding: 20,
     marginBottom: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.06,
-    shadowRadius: 12,
-    elevation: 4,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.08)',
   },
   statsTitle: {
     fontSize: 16,
     fontWeight: '700' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
     marginBottom: 16,
   },
   statRow: {
@@ -747,7 +735,7 @@ const styles = StyleSheet.create({
   statValue: {
     fontSize: 14,
     fontWeight: '600' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
   },
   infoCard: {
     backgroundColor: 'rgba(157, 193, 131, 0.1)',

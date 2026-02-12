@@ -323,20 +323,15 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 28,
     fontWeight: '700' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
   },
   headerAction: {
     width: 44,
     height: 44,
     borderRadius: 14,
-    backgroundColor: Colors.light.card,
+    backgroundColor: 'rgba(255,255,255,0.08)',
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: Colors.light.shadow,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 1,
-    shadowRadius: 12,
-    elevation: 3,
   },
   headerSubtitle: {
     fontSize: 15,
@@ -347,14 +342,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginHorizontal: 24,
     marginBottom: 28,
-    backgroundColor: Colors.light.card,
+    backgroundColor: 'rgba(255,255,255,0.05)',
     borderRadius: 20,
     padding: 16,
-    shadowColor: Colors.light.shadow,
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 1,
-    shadowRadius: 24,
-    elevation: 4,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.08)',
   },
   quickStatItem: {
     flex: 1,
@@ -371,7 +363,7 @@ const styles = StyleSheet.create({
   quickStatValue: {
     fontSize: 18,
     fontWeight: '700' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
     marginBottom: 2,
   },
   quickStatLabel: {
@@ -389,7 +381,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 20,
     fontWeight: '700' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
   },
   sectionCount: {
     fontSize: 13,
@@ -552,14 +544,11 @@ const styles = StyleSheet.create({
   productItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.light.card,
+    backgroundColor: 'rgba(255,255,255,0.05)',
     borderRadius: 16,
     padding: 16,
-    shadowColor: Colors.light.shadow,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 1,
-    shadowRadius: 12,
-    elevation: 2,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.08)',
   },
   productItemIcon: {
     width: 48,
@@ -575,7 +564,7 @@ const styles = StyleSheet.create({
   productItemTitle: {
     fontSize: 16,
     fontWeight: '600' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
     marginBottom: 4,
   },
   productItemDesc: {
@@ -591,14 +580,11 @@ const styles = StyleSheet.create({
   },
   ctaCard: {
     marginHorizontal: 24,
-    backgroundColor: Colors.light.card,
+    backgroundColor: 'rgba(255,255,255,0.05)',
     borderRadius: 24,
     overflow: 'hidden',
-    shadowColor: Colors.light.shadow,
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 1,
-    shadowRadius: 24,
-    elevation: 4,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.08)',
   },
   ctaContent: {
     padding: 24,
@@ -616,7 +602,7 @@ const styles = StyleSheet.create({
   ctaTitle: {
     fontSize: 18,
     fontWeight: '700' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
     marginBottom: 8,
     textAlign: 'center',
   },

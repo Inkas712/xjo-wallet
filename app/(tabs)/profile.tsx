@@ -374,7 +374,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 28,
     fontWeight: '700' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
   },
   scrollView: {
     flex: 1,
@@ -408,7 +408,7 @@ const styles = StyleSheet.create({
   userName: {
     fontSize: 24,
     fontWeight: '700' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
     marginBottom: 4,
   },
   memberSince: {
@@ -442,14 +442,11 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   sectionCard: {
-    backgroundColor: Colors.light.card,
+    backgroundColor: 'rgba(255,255,255,0.05)',
     borderRadius: 20,
     overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.04,
-    shadowRadius: 12,
-    elevation: 2,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.08)',
   },
   settingItem: {
     flexDirection: 'row',
@@ -477,7 +474,7 @@ const styles = StyleSheet.create({
   settingTitle: {
     fontSize: 16,
     fontWeight: '600' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
     marginBottom: 2,
   },
   settingTitleDanger: {

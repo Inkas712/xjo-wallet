@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
   logoText: {
     fontSize: 14,
     fontWeight: '800' as const,
-    color: Colors.light.primaryDark,
+    color: Colors.light.primary,
     letterSpacing: 1,
   },
 });

@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 42,
     fontWeight: '800' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
     marginBottom: 12,
     letterSpacing: 4,
   },
@@ -237,15 +237,12 @@ const styles = StyleSheet.create({
   featureRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.light.card,
+    backgroundColor: 'rgba(255,255,255,0.08)',
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderRadius: 24,
-    shadowColor: Colors.light.shadow,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 1,
-    shadowRadius: 12,
-    elevation: 4,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.1)',
   },
   featureIcon: {
     marginRight: 8,

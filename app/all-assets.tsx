@@ -51,7 +51,7 @@ export default function AllAssetsScreen() {
         options={{
           title: 'All Assets',
           headerStyle: { backgroundColor: Colors.light.background },
-          headerTintColor: Colors.light.primaryDark,
+          headerTintColor: Colors.light.primary,
         }}
       />
 
@@ -171,21 +171,18 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: '600' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
     marginBottom: 16,
   },
   assetCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.light.card,
+    backgroundColor: 'rgba(255,255,255,0.05)',
     borderRadius: 16,
     padding: 16,
     marginBottom: 12,
-    shadowColor: Colors.light.shadow,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 1,
-    shadowRadius: 8,
-    elevation: 2,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.08)',
   },
   assetLogo: {
     width: 44,
@@ -200,7 +197,7 @@ const styles = StyleSheet.create({
   assetName: {
     fontSize: 16,
     fontWeight: '600' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
     marginBottom: 2,
   },
   assetBalance: {
@@ -213,7 +210,7 @@ const styles = StyleSheet.create({
   assetUsdValue: {
     fontSize: 16,
     fontWeight: '600' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
     marginBottom: 4,
   },
   changeContainer: {

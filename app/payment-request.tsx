@@ -1238,19 +1238,14 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: Colors.light.card,
+    backgroundColor: 'rgba(255,255,255,0.08)',
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: Colors.light.shadow,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 1,
-    shadowRadius: 8,
-    elevation: 3,
   },
   headerTitle: {
     fontSize: 18,
     fontWeight: '700' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
   },
   headerPlaceholder: {
     width: 44,
@@ -1264,15 +1259,12 @@ const styles = StyleSheet.create({
   },
   methodTabs: {
     flexDirection: 'row',
-    backgroundColor: Colors.light.card,
+    backgroundColor: 'rgba(255,255,255,0.05)',
     borderRadius: 16,
     padding: 6,
     marginBottom: 24,
-    shadowColor: Colors.light.shadow,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 1,
-    shadowRadius: 12,
-    elevation: 4,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.08)',
   },
   methodTab: {
     flex: 1,
@@ -1318,14 +1310,11 @@ const styles = StyleSheet.create({
     gap: 20,
   },
   amountCard: {
-    backgroundColor: Colors.light.card,
+    backgroundColor: 'rgba(255,255,255,0.05)',
     borderRadius: 20,
     padding: 24,
-    shadowColor: Colors.light.shadow,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 1,
-    shadowRadius: 16,
-    elevation: 4,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.08)',
   },
   amountHeader: {
     flexDirection: 'row',
@@ -1355,7 +1344,7 @@ const styles = StyleSheet.create({
   currencySelectorText: {
     fontSize: 14,
     fontWeight: '700' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
   },
   balanceRow: {
     flexDirection: 'row',
@@ -1405,7 +1394,7 @@ const styles = StyleSheet.create({
   currencyName: {
     fontSize: 15,
     fontWeight: '600' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
     marginBottom: 2,
   },
   currencyBalance: {
@@ -1432,7 +1421,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 48,
     fontWeight: '700' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
     padding: 0,
   },
   noteInputWrapper: {
@@ -1443,18 +1432,15 @@ const styles = StyleSheet.create({
   noteInput: {
     paddingVertical: 14,
     fontSize: 15,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
   },
   nfcInfoCard: {
-    backgroundColor: Colors.light.card,
+    backgroundColor: 'rgba(255,255,255,0.05)',
     borderRadius: 16,
     padding: 20,
     alignItems: 'center',
-    shadowColor: Colors.light.shadow,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 1,
-    shadowRadius: 8,
-    elevation: 2,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.08)',
   },
   nfcInfoIcon: {
     width: 64,
@@ -1468,7 +1454,7 @@ const styles = StyleSheet.create({
   nfcInfoTitle: {
     fontSize: 16,
     fontWeight: '600' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
     marginBottom: 8,
   },
   nfcInfoText: {
@@ -1539,7 +1525,7 @@ const styles = StyleSheet.create({
   nfcTitle: {
     fontSize: 22,
     fontWeight: '700' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
     marginBottom: 8,
   },
   nfcSubtitle: {
@@ -1574,14 +1560,11 @@ const styles = StyleSheet.create({
     color: Colors.light.textSecondary,
   },
   nearbySection: {
-    backgroundColor: Colors.light.card,
+    backgroundColor: 'rgba(255,255,255,0.05)',
     borderRadius: 16,
     padding: 16,
-    shadowColor: Colors.light.shadow,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 1,
-    shadowRadius: 8,
-    elevation: 2,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.08)',
   },
   nearbySectionHeader: {
     flexDirection: 'row',
@@ -1592,7 +1575,7 @@ const styles = StyleSheet.create({
   nearbySectionTitle: {
     fontSize: 16,
     fontWeight: '600' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
   },
   refreshButton: {
     width: 36,
@@ -1680,7 +1663,7 @@ const styles = StyleSheet.create({
   deviceName: {
     fontSize: 15,
     fontWeight: '600' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
     marginBottom: 2,
   },
   deviceId: {
@@ -1718,16 +1701,13 @@ const styles = StyleSheet.create({
   deviceCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.light.card,
+    backgroundColor: 'rgba(255,255,255,0.05)',
     borderRadius: 16,
     padding: 20,
     width: '100%',
     marginBottom: 24,
-    shadowColor: Colors.light.shadow,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 1,
-    shadowRadius: 8,
-    elevation: 2,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.08)',
   },
   connectionBadge: {
     width: 36,
@@ -1781,7 +1761,7 @@ const styles = StyleSheet.create({
   paymentSummaryAmount: {
     fontSize: 32,
     fontWeight: '700' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
   },
   codeWaiting: {
     alignItems: 'center',
@@ -1800,19 +1780,16 @@ const styles = StyleSheet.create({
     width: 48,
     height: 60,
     borderRadius: 12,
-    backgroundColor: Colors.light.card,
+    backgroundColor: 'rgba(255,255,255,0.08)',
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: Colors.light.shadow,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 1,
-    shadowRadius: 8,
-    elevation: 2,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.1)',
   },
   codeDigit: {
     fontSize: 28,
     fontWeight: '700' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
   },
   codeTimer: {
     flexDirection: 'row',
@@ -1842,16 +1819,13 @@ const styles = StyleSheet.create({
   codeActionButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.light.card,
+    backgroundColor: 'rgba(255,255,255,0.08)',
     paddingVertical: 12,
     paddingHorizontal: 24,
     borderRadius: 12,
     gap: 8,
-    shadowColor: Colors.light.shadow,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 1,
-    shadowRadius: 8,
-    elevation: 2,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.1)',
   },
   codeActionText: {
     fontSize: 14,
@@ -1865,7 +1839,7 @@ const styles = StyleSheet.create({
   waitingTitle: {
     fontSize: 18,
     fontWeight: '600' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
     marginBottom: 8,
   },
   waitingText: {
@@ -1875,14 +1849,11 @@ const styles = StyleSheet.create({
   },
   codeModeSwitch: {
     flexDirection: 'row',
-    backgroundColor: Colors.light.card,
+    backgroundColor: 'rgba(255,255,255,0.05)',
     borderRadius: 12,
     padding: 4,
-    shadowColor: Colors.light.shadow,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 1,
-    shadowRadius: 8,
-    elevation: 2,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.08)',
   },
   modeButton: {
     flex: 1,
@@ -1905,20 +1876,17 @@ const styles = StyleSheet.create({
     color: Colors.light.white,
   },
   codeInfoCard: {
-    backgroundColor: Colors.light.card,
+    backgroundColor: 'rgba(255,255,255,0.05)',
     borderRadius: 16,
     padding: 20,
     alignItems: 'center',
-    shadowColor: Colors.light.shadow,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 1,
-    shadowRadius: 8,
-    elevation: 2,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.08)',
   },
   codeInfoTitle: {
     fontSize: 16,
     fontWeight: '600' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
     marginTop: 12,
     marginBottom: 8,
   },
@@ -1935,7 +1903,7 @@ const styles = StyleSheet.create({
   receiveModeTitle: {
     fontSize: 24,
     fontWeight: '700' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
     marginBottom: 8,
   },
   receiveModeSubtitle: {
@@ -1952,18 +1920,15 @@ const styles = StyleSheet.create({
     width: 48,
     height: 60,
     borderRadius: 12,
-    backgroundColor: Colors.light.card,
-    shadowColor: Colors.light.shadow,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 1,
-    shadowRadius: 8,
-    elevation: 2,
+    backgroundColor: 'rgba(255,255,255,0.08)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.1)',
   },
   codeInputDigit: {
     flex: 1,
     fontSize: 24,
     fontWeight: '700' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
     textAlign: 'center',
   },
   verifyButton: {
@@ -1999,7 +1964,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   modalContent: {
-    backgroundColor: Colors.light.white,
+    backgroundColor: '#1C2128',
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     paddingTop: 20,
@@ -2016,7 +1981,7 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: 20,
     fontWeight: '700' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
   },
   modalScroll: {
     paddingHorizontal: 20,
@@ -2047,7 +2012,7 @@ const styles = StyleSheet.create({
   requestSender: {
     fontSize: 15,
     fontWeight: '600' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
     marginBottom: 2,
   },
   requestNote: {
@@ -2057,7 +2022,7 @@ const styles = StyleSheet.create({
   requestAmount: {
     fontSize: 20,
     fontWeight: '700' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
   },
   requestActions: {
     flexDirection: 'row',
@@ -2068,7 +2033,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: Colors.light.white,
+    backgroundColor: 'transparent',
     paddingVertical: 12,
     borderRadius: 12,
     gap: 6,

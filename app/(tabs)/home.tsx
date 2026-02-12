@@ -410,7 +410,7 @@ export default function HomeScreen() {
             }}
             activeOpacity={0.7}
           >
-            <Bell size={22} color={Colors.light.primaryDark} />
+            <Bell size={22} color={Colors.light.primary} />
             <View style={styles.notificationBadge} />
           </TouchableOpacity>
         </View>
@@ -757,7 +757,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     backgroundColor: '#4ADE80',
     borderWidth: 2,
-    borderColor: Colors.light.background,
+    borderColor: '#0D1117',
   },
   greeting: {
     fontSize: 13,
@@ -767,20 +767,15 @@ const styles = StyleSheet.create({
   userName: {
     fontSize: 20,
     fontWeight: '700' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
   },
   notificationButton: {
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: Colors.light.card,
+    backgroundColor: 'rgba(255,255,255,0.08)',
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 8,
-    elevation: 3,
   },
   notificationBadge: {
     position: 'absolute',
@@ -940,7 +935,7 @@ const styles = StyleSheet.create({
   quickActionLabel: {
     fontSize: 13,
     fontWeight: '600' as const,
-    color: Colors.light.primaryDark,
+    color: 'rgba(255,255,255,0.8)',
   },
   assetSection: {
     paddingHorizontal: 20,
@@ -955,7 +950,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: '700' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
   },
   seeAllButton: {
     flexDirection: 'row',
@@ -968,14 +963,11 @@ const styles = StyleSheet.create({
     color: Colors.light.primary,
   },
   assetCard: {
-    backgroundColor: Colors.light.card,
+    backgroundColor: 'rgba(255,255,255,0.05)',
     borderRadius: 24,
     padding: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.06,
-    shadowRadius: 16,
-    elevation: 4,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.08)',
   },
   assetRow: {
     flexDirection: 'row',
@@ -997,7 +989,7 @@ const styles = StyleSheet.create({
   assetName: {
     fontSize: 16,
     fontWeight: '600' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
     marginBottom: 2,
   },
   assetSymbol: {
@@ -1010,7 +1002,7 @@ const styles = StyleSheet.create({
   assetValue: {
     fontSize: 17,
     fontWeight: '700' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
     marginBottom: 4,
   },
   assetChange: {
@@ -1183,14 +1175,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   transactionsList: {
-    backgroundColor: Colors.light.card,
+    backgroundColor: 'rgba(255,255,255,0.05)',
     borderRadius: 24,
     overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.06,
-    shadowRadius: 16,
-    elevation: 4,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.08)',
   },
   transactionItem: {
     flexDirection: 'row',
@@ -1223,7 +1212,7 @@ const styles = StyleSheet.create({
   transactionName: {
     fontSize: 15,
     fontWeight: '600' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
     marginBottom: 3,
   },
   transactionDate: {
@@ -1238,21 +1227,18 @@ const styles = StyleSheet.create({
     color: Colors.light.success,
   },
   amountSent: {
-    color: Colors.light.primaryDark,
+    color: 'rgba(255,255,255,0.7)',
   },
   holdingsSection: {
     paddingHorizontal: 20,
     marginBottom: 24,
   },
   holdingsList: {
-    backgroundColor: Colors.light.card,
+    backgroundColor: 'rgba(255,255,255,0.05)',
     borderRadius: 24,
     overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.06,
-    shadowRadius: 16,
-    elevation: 4,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.08)',
   },
   holdingItem: {
     flexDirection: 'row',
@@ -1280,7 +1266,7 @@ const styles = StyleSheet.create({
   holdingName: {
     fontSize: 15,
     fontWeight: '600' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
     marginBottom: 2,
   },
   holdingSymbol: {
@@ -1293,7 +1279,7 @@ const styles = StyleSheet.create({
   holdingAmount: {
     fontSize: 15,
     fontWeight: '700' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
     marginBottom: 2,
   },
   holdingUsd: {

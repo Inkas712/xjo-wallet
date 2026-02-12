@@ -771,7 +771,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: '700' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
     marginBottom: 2,
   },
   subtitle: {
@@ -782,14 +782,9 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: Colors.light.card,
+    backgroundColor: 'rgba(255,255,255,0.08)',
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: Colors.light.shadow,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 1,
-    shadowRadius: 8,
-    elevation: 3,
   },
   scrollView: {
     flex: 1,
@@ -811,9 +806,9 @@ const styles = StyleSheet.create({
     gap: 8,
     paddingVertical: 14,
     borderRadius: 12,
-    backgroundColor: Colors.light.card,
+    backgroundColor: 'rgba(255,255,255,0.05)',
     borderWidth: 1,
-    borderColor: Colors.light.border,
+    borderColor: 'rgba(255,255,255,0.1)',
   },
   methodButtonActive: {
     backgroundColor: Colors.light.primaryDark,
@@ -858,15 +853,12 @@ const styles = StyleSheet.create({
     color: 'rgba(255,255,255,0.8)',
   },
   formCard: {
-    backgroundColor: Colors.light.card,
+    backgroundColor: 'rgba(255,255,255,0.05)',
     borderRadius: 20,
     padding: 20,
     marginBottom: 20,
-    shadowColor: Colors.light.shadow,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 1,
-    shadowRadius: 16,
-    elevation: 4,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.08)',
   },
   inputGroup: {
     marginBottom: 20,
@@ -889,7 +881,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 16,
     fontSize: 16,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
   },
   amountInput: {
     fontSize: 24,
@@ -919,7 +911,7 @@ const styles = StyleSheet.create({
   infoTitle: {
     fontSize: 14,
     fontWeight: '600' as const,
-    color: Colors.light.primaryDark,
+    color: Colors.light.primary,
     marginBottom: 4,
   },
   infoText: {
@@ -962,11 +954,13 @@ const styles = StyleSheet.create({
     padding: 24,
   },
   modalContent: {
-    backgroundColor: Colors.light.card,
+    backgroundColor: '#1C2128',
     borderRadius: 24,
     padding: 24,
     width: '100%',
     maxWidth: 340,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.1)',
   },
   modalCloseButton: {
     position: 'absolute',
@@ -996,7 +990,7 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: 22,
     fontWeight: '700' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
     textAlign: 'center',
   },
   confirmDetails: {
@@ -1020,12 +1014,12 @@ const styles = StyleSheet.create({
   confirmValue: {
     fontSize: 14,
     fontWeight: '600' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
   },
   confirmAmount: {
     fontSize: 20,
     fontWeight: '700' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
   },
   modalActions: {
     flexDirection: 'row',
@@ -1254,7 +1248,7 @@ const styles = StyleSheet.create({
   },
   webFallback: {
     flex: 1,
-    backgroundColor: Colors.light.background,
+    backgroundColor: '#0D1117',
   },
   webFallbackContent: {
     flex: 1,
@@ -1274,7 +1268,7 @@ const styles = StyleSheet.create({
   webFallbackTitle: {
     fontSize: 20,
     fontWeight: '700' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
     marginBottom: 12,
     textAlign: 'center',
   },
@@ -1313,9 +1307,9 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   quickActionCardAlt: {
-    backgroundColor: Colors.light.card,
+    backgroundColor: 'rgba(255,255,255,0.05)',
     borderWidth: 1,
-    borderColor: Colors.light.border,
+    borderColor: 'rgba(255,255,255,0.1)',
   },
   quickActionIconContainer: {
     width: 48,
@@ -1334,7 +1328,7 @@ const styles = StyleSheet.create({
     color: Colors.light.white,
   },
   quickActionTitleAlt: {
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
   },
   advancedPayCard: {
     backgroundColor: Colors.light.primaryDark,

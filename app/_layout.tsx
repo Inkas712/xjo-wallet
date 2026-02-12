@@ -20,6 +20,7 @@ function RootLayoutNav() {
         headerBackTitle: "Back",
         headerStyle: { backgroundColor: Colors.light.background },
         headerTintColor: Colors.light.primary,
+        headerTitleStyle: { color: '#FFFFFF' },
         contentStyle: { backgroundColor: Colors.light.background },
       }}
     >
@@ -50,7 +51,7 @@ export default function RootLayout() {
         <GestureHandlerRootView style={{ flex: 1 }}>
           <AuthProvider>
             <WalletProvider>
-              <StatusBar style="dark" />
+              <StatusBar style="light" />
               <RootLayoutNav />
             </WalletProvider>
           </AuthProvider>

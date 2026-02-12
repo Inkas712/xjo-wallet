@@ -48,7 +48,7 @@ export default function TransactionsScreen() {
         options={{
           title: 'Transactions',
           headerStyle: { backgroundColor: Colors.light.background },
-          headerTintColor: Colors.light.primaryDark,
+          headerTintColor: Colors.light.primary,
         }}
       />
 
@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
   summaryValue: {
     fontSize: 20,
     fontWeight: '700' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
   },
   receivedValue: {
     color: Colors.light.success,
@@ -228,14 +228,11 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   transactionsList: {
-    backgroundColor: Colors.light.card,
+    backgroundColor: 'rgba(255,255,255,0.05)',
     borderRadius: 20,
     overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.06,
-    shadowRadius: 12,
-    elevation: 4,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.08)',
   },
   transactionItem: {
     flexDirection: 'row',
@@ -268,7 +265,7 @@ const styles = StyleSheet.create({
   transactionName: {
     fontSize: 15,
     fontWeight: '600' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
     marginBottom: 4,
   },
   transactionDate: {
@@ -293,7 +290,7 @@ const styles = StyleSheet.create({
     color: Colors.light.success,
   },
   amountSent: {
-    color: Colors.light.primaryDark,
+    color: 'rgba(255,255,255,0.7)',
   },
   transactionCurrency: {
     fontSize: 11,
@@ -306,7 +303,7 @@ const styles = StyleSheet.create({
   emptyTitle: {
     fontSize: 18,
     fontWeight: '600' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
     marginTop: 16,
     marginBottom: 8,
   },

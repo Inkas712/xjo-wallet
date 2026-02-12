@@ -250,7 +250,7 @@ export default function ProductDetailsScreen() {
         options={{
           title: product.name,
           headerStyle: { backgroundColor: Colors.light.background },
-          headerTintColor: Colors.light.primaryDark,
+          headerTintColor: Colors.light.primary,
         }}
       />
 
@@ -325,7 +325,7 @@ const styles = StyleSheet.create({
   productName: {
     fontSize: 24,
     fontWeight: '700' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
     marginBottom: 12,
     textAlign: 'center',
   },
@@ -336,20 +336,17 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
   benefitsSection: {
-    backgroundColor: Colors.light.card,
+    backgroundColor: 'rgba(255,255,255,0.05)',
     borderRadius: 20,
     padding: 20,
     marginBottom: 20,
-    shadowColor: Colors.light.shadow,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 1,
-    shadowRadius: 16,
-    elevation: 4,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.08)',
   },
   sectionTitle: {
     fontSize: 18,
     fontWeight: '600' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
     marginBottom: 16,
   },
   benefitItem: {
@@ -373,14 +370,11 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   calculatorSection: {
-    backgroundColor: Colors.light.card,
+    backgroundColor: 'rgba(255,255,255,0.05)',
     borderRadius: 20,
     padding: 20,
-    shadowColor: Colors.light.shadow,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 1,
-    shadowRadius: 16,
-    elevation: 4,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.08)',
   },
   calculatorHeader: {
     flexDirection: 'row',
@@ -391,7 +385,7 @@ const styles = StyleSheet.create({
   calculatorTitle: {
     fontSize: 18,
     fontWeight: '600' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
   },
   calculatorInputs: {
     gap: 16,
@@ -406,12 +400,12 @@ const styles = StyleSheet.create({
     color: Colors.light.textSecondary,
   },
   calcInput: {
-    backgroundColor: Colors.light.backgroundSecondary,
+    backgroundColor: 'rgba(255,255,255,0.08)',
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 14,
     fontSize: 16,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
   },
   calculatorResult: {
     backgroundColor: Colors.light.primaryDark,
@@ -469,11 +463,13 @@ const styles = StyleSheet.create({
     padding: 24,
   },
   modalContent: {
-    backgroundColor: Colors.light.card,
+    backgroundColor: '#1C2128',
     borderRadius: 24,
     padding: 24,
     width: '100%',
     maxWidth: 360,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.1)',
   },
   modalCloseButton: {
     position: 'absolute',
@@ -485,7 +481,7 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: 22,
     fontWeight: '700' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
     marginBottom: 8,
   },
   modalDescription: {
@@ -506,12 +502,12 @@ const styles = StyleSheet.create({
     color: Colors.light.primary,
   },
   formInput: {
-    backgroundColor: Colors.light.backgroundSecondary,
+    backgroundColor: 'rgba(255,255,255,0.08)',
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 14,
     fontSize: 16,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
   },
   submitButton: {
     backgroundColor: Colors.light.primaryDark,
@@ -540,7 +536,7 @@ const styles = StyleSheet.create({
   successTitle: {
     fontSize: 22,
     fontWeight: '700' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
     marginBottom: 8,
   },
   successText: {

@@ -414,7 +414,7 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.light.background,
+    backgroundColor: '#0D1117',
   },
   content: {
     flex: 1,
@@ -449,7 +449,7 @@ const styles = StyleSheet.create({
   greeting: {
     fontSize: 24,
     fontWeight: '700' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
     marginBottom: 4,
   },
   subtitle: {
@@ -473,7 +473,7 @@ const styles = StyleSheet.create({
     position: 'absolute' as const,
   },
   dotEmpty: {
-    backgroundColor: '#E8E4DC',
+    backgroundColor: 'rgba(255,255,255,0.15)',
   },
   dotFilled: {
     backgroundColor: Colors.light.primary,
@@ -501,19 +501,14 @@ const styles = StyleSheet.create({
     width: 72,
     height: 72,
     borderRadius: 36,
-    backgroundColor: Colors.light.card,
+    backgroundColor: 'rgba(255,255,255,0.08)',
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: Colors.light.shadow,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 1,
-    shadowRadius: 8,
-    elevation: 3,
   },
   keypadText: {
     fontSize: 28,
     fontWeight: '500' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
   },
   forgotButton: {
     marginTop: 32,

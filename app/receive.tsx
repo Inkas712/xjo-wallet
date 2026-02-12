@@ -88,7 +88,7 @@ export default function ReceiveScreen() {
         options={{
           title: 'Receive Payment',
           headerStyle: { backgroundColor: Colors.light.background },
-          headerTintColor: Colors.light.primaryDark,
+          headerTintColor: Colors.light.primary,
         }}
       />
 
@@ -291,20 +291,17 @@ const styles = StyleSheet.create({
     color: 'rgba(255,255,255,0.9)',
   },
   detailsCard: {
-    backgroundColor: Colors.light.card,
+    backgroundColor: 'rgba(255,255,255,0.05)',
     borderRadius: 20,
     padding: 20,
     marginBottom: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.06,
-    shadowRadius: 12,
-    elevation: 4,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.08)',
   },
   sectionTitle: {
     fontSize: 16,
     fontWeight: '700' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
     marginBottom: 16,
   },
   detailItem: {
@@ -334,7 +331,7 @@ const styles = StyleSheet.create({
   detailValue: {
     fontSize: 15,
     fontWeight: '600' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
   },
   copyButton: {
     width: 40,

@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
   webTitle: {
     fontSize: 24,
     fontWeight: '700' as const,
-    color: Colors.light.primaryDark,
+    color: '#FFFFFF',
     marginBottom: 16,
   },
   webText: {
