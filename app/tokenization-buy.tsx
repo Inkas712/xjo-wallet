@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import {
   View,
   Text,
@@ -23,14 +23,13 @@ import {
   Hash,
   CheckCircle,
   Zap,
-  Shield,
   AlertTriangle,
   Copy,
 } from 'lucide-react-native';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useTokenization } from '@/contexts/TokenizationContext';
 import { useWallet } from '@/contexts/WalletContext';
-import { ASSET_TYPE_COLORS, ASSET_TYPE_LABELS } from '@/mocks/tokenizedAssets';
+import { ASSET_TYPE_COLORS } from '@/mocks/tokenizedAssets';
 import { shortenTxHash, generateMockTxHash } from '@/services/solana';
 
 type BuyStep = 'amount' | 'payment' | 'confirm' | 'processing' | 'success';

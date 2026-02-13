@@ -37,6 +37,8 @@ import {
   User,
   X,
   CheckCircle,
+  ChevronDown,
+  AlertTriangle,
 } from 'lucide-react-native';
 import Colors from '@/constants/colors';
 import { useAuth } from '@/contexts/AuthContext';
@@ -47,7 +49,6 @@ import { PaymentMethod } from '@/types/payment';
 import { CurrencyCode } from '@/types';
 import { formatExpirationTime } from '@/utils/paymentSecurity';
 import { Image } from 'expo-image';
-import { ChevronDown, AlertTriangle } from 'lucide-react-native';
 
 interface NearbyUser {
   id: string;
@@ -71,7 +72,7 @@ export default function PaymentRequestScreen() {
   const router = useRouter();
   const { user } = useAuth();
   const { colors } = useTheme();
-  const { sendPayment, receivePayment, getBalance, hasEnoughBalance, convertAmount, getUsdRate } = useWallet();
+  const { sendPayment, receivePayment, getBalance } = useWallet();
   
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod>('code');
   const [amount, setAmount] = useState('');

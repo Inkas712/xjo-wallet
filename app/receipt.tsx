@@ -47,7 +47,7 @@ export default function ReceiptScreen() {
       Animated.timing(slideAnim, { toValue: 0, duration: 400, useNativeDriver: true }),
     ]).start();
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-  }, []);
+  }, [fadeAnim, scaleAnim, slideAnim]);
 
   const txDate = params.txDate ? new Date(params.txDate) : new Date();
   const isSent = params.txType === 'sent';

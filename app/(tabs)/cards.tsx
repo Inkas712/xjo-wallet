@@ -34,7 +34,7 @@ type CardAction = 'freeze' | 'reissue' | 'close' | 'details' | null;
 
 export default function CardsScreen() {
   const { user } = useAuth();
-  const { colors, isDark } = useTheme();
+  const { colors } = useTheme();
   const [cards, setCards] = useState<Card[]>(
     mockCards.map(card => ({ ...card, cardholderName: user?.fullName?.toUpperCase() || 'CARDHOLDER' }))
   );

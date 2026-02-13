@@ -25,7 +25,6 @@ import {
   Zap,
   Shield,
   FileText,
-  Lock,
 } from 'lucide-react-native';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useTokenization } from '@/contexts/TokenizationContext';

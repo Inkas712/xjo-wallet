@@ -155,6 +155,7 @@ export default function ProfileScreen() {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     if (Platform.OS !== 'web') {
       try {
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
         const LocalAuth = require('expo-local-authentication');
         const hasHardware = await LocalAuth.hasHardwareAsync();
         if (!hasHardware) {

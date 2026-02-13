@@ -22,7 +22,7 @@ const TRANSACTIONS_KEY = 'fintech_token_transactions';
 const CUSTOM_ASSETS_KEY = 'fintech_custom_assets';
 
 export const [TokenizationProvider, useTokenization] = createContextHook(() => {
-  const { deductBalance, addBalance, totalBalanceUsd } = useWallet();
+  const { deductBalance, addBalance } = useWallet();
   const [holdings, setHoldings] = useState<UserHolding[]>([]);
   const [transactions, setTransactions] = useState<TokenTransaction[]>([]);
   const [customAssets, setCustomAssets] = useState<TokenizedAsset[]>([]);
@@ -125,6 +125,8 @@ export const [TokenizationProvider, useTokenization] = createContextHook(() => {
     return { totalValue, totalPnl, totalPnlPercentage, pendingIncome, allocationByType };
   }, [holdings, getAssetById]);
 
+  const { mutate: saveData } = saveMutation;
+
   const buyTokens = useCallback((assetId: string, tokenCount: number): boolean => {
     const asset = getAssetById(assetId);
     if (!asset) {
@@ -183,10 +185,10 @@ export const [TokenizationProvider, useTokenization] = createContextHook(() => {
     const newTxs = [tx, ...transactions];
     setHoldings(newHoldings);
     setTransactions(newTxs);
-    saveMutation.mutate({ holdings: newHoldings, transactions: newTxs });
-    console.log(`[Tokenization] Bought ${tokenCount} tokens of ${asset.name} for $${totalCost}`);
+    saveData({ holdings: newHoldings, transactions: newTxs });
+    console.log(`[Tokenization] Bought ${tokenCount} tokens of ${asset.name} for ${totalCost}`);
     return true;
-  }, [holdings, transactions, getAssetById, deductBalance, saveMutation]);
+  }, [holdings, transactions, getAssetById, deductBalance, saveData]);
 
   const sellTokens = useCallback((assetId: string, tokenCount: number): boolean => {
     const asset = getAssetById(assetId);
@@ -234,10 +236,10 @@ export const [TokenizationProvider, useTokenization] = createContextHook(() => {
     const newTxs = [tx, ...transactions];
     setHoldings(newHoldings);
     setTransactions(newTxs);
-    saveMutation.mutate({ holdings: newHoldings, transactions: newTxs });
-    console.log(`[Tokenization] Sold ${tokenCount} tokens of ${asset.name} for $${totalValue}`);
+    saveData({ holdings: newHoldings, transactions: newTxs });
+    console.log(`[Tokenization] Sold ${tokenCount} tokens of ${asset.name} for ${totalValue}`);
     return true;
-  }, [holdings, transactions, getAssetById, addBalance, saveMutation]);
+  }, [holdings, transactions, getAssetById, addBalance, saveData]);
 
   const tokenizeAsset = useCallback(async (asset: Omit<TokenizedAsset, 'id' | 'solanaAddress' | 'createdAt'>): Promise<TokenizedAsset | null> => {
     try {
@@ -253,14 +255,14 @@ export const [TokenizationProvider, useTokenization] = createContextHook(() => {
 
       const newCustomAssets = [...customAssets, newAsset];
       setCustomAssets(newCustomAssets);
-      saveMutation.mutate({ holdings, transactions, customAssets: newCustomAssets });
+      saveData({ holdings, transactions, customAssets: newCustomAssets });
       console.log('[Tokenization] Asset tokenized:', newAsset.id);
       return newAsset;
     } catch (error) {
       console.error('[Tokenization] Error tokenizing asset:', error);
       return null;
     }
-  }, [customAssets, holdings, transactions, saveMutation]);
+  }, [customAssets, holdings, transactions, saveData]);
 
   const claimIncome = useCallback(() => {
     const income = portfolioSummary.pendingIncome;
@@ -283,10 +285,10 @@ export const [TokenizationProvider, useTokenization] = createContextHook(() => {
 
     const newTxs = [tx, ...transactions];
     setTransactions(newTxs);
-    saveMutation.mutate({ holdings, transactions: newTxs });
-    console.log(`[Tokenization] Claimed $${income.toFixed(2)} income`);
+    saveData({ holdings, transactions: newTxs });
+    console.log(`[Tokenization] Claimed ${income.toFixed(2)} income`);
     return true;
-  }, [portfolioSummary.pendingIncome, addBalance, holdings, transactions, saveMutation]);
+  }, [portfolioSummary.pendingIncome, addBalance, holdings, transactions, saveData]);
 
   return {
     allAssets,

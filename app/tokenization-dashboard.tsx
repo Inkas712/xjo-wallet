@@ -9,8 +9,7 @@ import {
   Dimensions,
   RefreshControl,
 } from 'react-native';
-import { useRouter } from 'expo-router';
-import { Stack } from 'expo-router';
+import { useRouter, Stack } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -33,6 +32,7 @@ import { useTokenization } from '@/contexts/TokenizationContext';
 import { ASSET_TYPE_COLORS, ASSET_TYPE_LABELS } from '@/mocks/tokenizedAssets';
 import { AssetType } from '@/types/tokenization';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const { width } = Dimensions.get('window');
 
 const TYPE_ICONS: Record<AssetType, React.ComponentType<{ size: number; color: string }>> = {
@@ -55,7 +55,7 @@ export default function TokenizationDashboardScreen() {
       Animated.timing(fadeAnim, { toValue: 1, duration: 600, useNativeDriver: true }),
       Animated.timing(slideAnim, { toValue: 0, duration: 500, useNativeDriver: true }),
     ]).start();
-  }, []);
+  }, [fadeAnim, slideAnim]);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);

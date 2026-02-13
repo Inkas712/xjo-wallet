@@ -50,7 +50,7 @@ interface ScannedPaymentData {
 
 export default function PaymentsScreen() {
   const router = useRouter();
-  const { colors, isDark } = useTheme();
+  const { colors } = useTheme();
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('nickname');
   const [recipient, setRecipient] = useState('');
   const [amount, setAmount] = useState('');

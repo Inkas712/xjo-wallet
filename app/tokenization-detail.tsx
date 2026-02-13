@@ -19,11 +19,7 @@ import {
   Users,
   Shield,
   Zap,
-  ExternalLink,
-  FileText,
-  Clock,
   DollarSign,
-  ChevronRight,
   Copy,
   Building2,
   BarChart3,
@@ -37,14 +33,13 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { useTokenization } from '@/contexts/TokenizationContext';
 import { ASSET_TYPE_COLORS, ASSET_TYPE_LABELS, generateMockPriceHistory } from '@/mocks/tokenizedAssets';
 import { shortenAddress } from '@/services/solana';
-import { AssetType, PricePoint } from '@/types/tokenization';
+import { AssetType } from '@/types/tokenization';
 
 const { width } = Dimensions.get('window');
 const CHART_WIDTH = width - 64;
 const CHART_HEIGHT = 160;
 
 type TimeRange = '7d' | '30d' | 'all';
-type DetailTab = 'overview' | 'holders' | 'documents';
 
 const TYPE_ICONS: Record<AssetType, React.ComponentType<{ size: number; color: string }>> = {
   real_estate: Building2,
@@ -59,7 +54,7 @@ export default function TokenizationDetailScreen() {
   const { colors } = useTheme();
   const { getAssetById, getHoldingForAsset, transactions } = useTokenization();
   const [timeRange, setTimeRange] = useState<TimeRange>('30d');
-  const [activeTab, setActiveTab] = useState<DetailTab>('overview');
+
   const [refreshing, setRefreshing] = useState(false);
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
@@ -69,7 +64,7 @@ export default function TokenizationDetailScreen() {
 
   useEffect(() => {
     Animated.timing(fadeAnim, { toValue: 1, duration: 500, useNativeDriver: true }).start();
-  }, []);
+  }, [fadeAnim]);
 
   const priceHistory = asset ? generateMockPriceHistory(
     asset.pricePerToken,
@@ -98,12 +93,6 @@ export default function TokenizationDetailScreen() {
     const minVal = Math.min(...priceHistory.map(p => p.value));
     const maxVal = Math.max(...priceHistory.map(p => p.value));
     const range = maxVal - minVal || 1;
-
-    const points = priceHistory.map((p, i) => {
-      const x = (i / (priceHistory.length - 1)) * CHART_WIDTH;
-      const y = CHART_HEIGHT - ((p.value - minVal) / range) * (CHART_HEIGHT - 20) - 10;
-      return `${x},${y}`;
-    }).join(' ');
 
     const isPositive = priceHistory[priceHistory.length - 1].value >= priceHistory[0].value;
     const chartColor = isPositive ? '#14F195' : '#FF6B6B';

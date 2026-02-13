@@ -38,7 +38,7 @@ export const [WalletProvider, useWallet] = createContextHook(() => {
   const storageKey = user ? `${WALLET_STORAGE_KEY}_${user.id}` : WALLET_STORAGE_KEY;
 
   const walletQuery = useQuery({
-    queryKey: ['wallet', user?.id],
+    queryKey: ['wallet', user?.id, storageKey],
     queryFn: async () => {
       console.log('Loading wallet for user:', user?.id);
       const stored = await AsyncStorage.getItem(storageKey);
@@ -75,11 +75,13 @@ export const [WalletProvider, useWallet] = createContextHook(() => {
     },
   });
 
+  const { mutate: saveToStorage } = saveMutation;
+
   const saveWallet = useCallback((newBalances: WalletBalance[], newTransactions: WalletTransaction[]) => {
     setBalances(newBalances);
     setTransactions(newTransactions);
-    saveMutation.mutate({ balances: newBalances, transactions: newTransactions });
-  }, [saveMutation]);
+    saveToStorage({ balances: newBalances, transactions: newTransactions });
+  }, [saveToStorage]);
 
   const getBalance = useCallback((currency: CurrencyCode): number => {
     const bal = balances.find(b => b.currency === currency);
