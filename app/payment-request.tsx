@@ -371,8 +371,19 @@ export default function PaymentRequestScreen() {
       if (result.success && result.paymentData) {
         const pCurrency = (result.paymentData.currency || 'USD') as CurrencyCode;
         receivePayment(pCurrency, result.paymentData.amount, result.paymentData.senderName, result.paymentData.note);
-        setTransactionId(`TXN_${Date.now().toString(36).toUpperCase()}`);
-        showSuccessAnimation();
+        const txId = `TXN_${Date.now().toString(36).toUpperCase()}`;
+        setTransactionId(txId);
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        navigateToReceipt(
+          txId,
+          'received',
+          result.paymentData.amount.toString(),
+          pCurrency,
+          result.paymentData.senderName,
+          'Code Pay',
+          result.paymentData.note,
+        );
+        return;
       } else {
         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
         Alert.alert('Error', result.error || 'Invalid code');
@@ -466,7 +477,7 @@ export default function PaymentRequestScreen() {
     }
   };
 
-  const handleStartNFC = () => {
+  const handleStartNFC = async () => {
     if (!amount) return;
     
     if (insufficientBalance) {
@@ -478,28 +489,97 @@ export default function PaymentRequestScreen() {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     setStep('waiting');
     setNfcStatus('searching');
-    
-    setTimeout(() => {
-      setNfcStatus('found');
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    }, 3000);
-    
-    setTimeout(() => {
-      setNfcStatus('transferring');
-    }, 3500);
-    
-    setTimeout(() => {
-      const sent = sendPayment(selectedCurrency, parseFloat(amount), 'NFC Recipient', note || undefined);
-      if (sent) {
-        setTransactionId(`TXN_${Date.now().toString(36).toUpperCase()}`);
-        showSuccessAnimation();
-      } else {
-        setStep('input');
-        setNfcStatus('idle');
-        Alert.alert('Payment Failed', 'Insufficient balance');
+
+    if (Platform.OS === 'web') {
+      setTimeout(() => {
+        setNfcStatus('found');
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      }, 2000);
+      setTimeout(() => { setNfcStatus('transferring'); }, 2500);
+      setTimeout(() => {
+        const sent = sendPayment(selectedCurrency, parseFloat(amount), 'NFC Recipient', note || undefined);
+        if (sent) { showSuccessAnimation(); }
+        else { setStep('input'); setNfcStatus('idle'); Alert.alert('Payment Failed', 'Insufficient balance'); }
+      }, 3500);
+      return;
+    }
+
+    try {
+      if (user) {
+          const result = await generateCodeMutation.mutateAsync({
+          senderId: user.id,
+          senderName: user.fullName,
+          amount: parseFloat(amount),
+          currency: selectedCurrency,
+          note: `NFC:${note || ''}`,
+        });
+
+        if (result.success) {
+          setGeneratedCode(result.code);
+          setCodeExpiresAt(result.expiresAt);
+
+          setTimeout(() => {
+            setNfcStatus('found');
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+          }, 2000);
+
+          const checkNfcStatus = setInterval(async () => {
+            try {
+              const statusResult = await trpcUtils.payment.getPaymentStatus.fetch({ code: result.code });
+              if (statusResult.exists && statusResult.status === 'matched') {
+                clearInterval(checkNfcStatus);
+                setNfcStatus('transferring');
+                setTimeout(() => {
+                  const sent = sendPayment(selectedCurrency, parseFloat(amount), (statusResult as any).recipientName || 'NFC Recipient', note || undefined);
+                  if (sent) { showSuccessAnimation(); }
+                  else { setStep('input'); setNfcStatus('idle'); Alert.alert('Payment Failed', 'Insufficient balance'); }
+                }, 1000);
+              }
+            } catch (err) {
+              console.log('NFC status check error:', err);
+            }
+          }, 2000);
+
+          setTimeout(() => {
+            clearInterval(checkNfcStatus);
+            if (nfcStatus === 'searching') {
+              const sent = sendPayment(selectedCurrency, parseFloat(amount), 'NFC Recipient', note || undefined);
+              if (sent) { showSuccessAnimation(); }
+              else { setStep('input'); setNfcStatus('idle'); Alert.alert('Payment Failed', 'Insufficient balance'); }
+            }
+          }, 30000);
+        }
       }
-    }, 4500);
+    } catch (error) {
+      console.error('NFC payment error:', error);
+      setTimeout(() => {
+        setNfcStatus('found');
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      }, 2000);
+      setTimeout(() => { setNfcStatus('transferring'); }, 2500);
+      setTimeout(() => {
+        const sent = sendPayment(selectedCurrency, parseFloat(amount), 'NFC Recipient', note || undefined);
+        if (sent) { showSuccessAnimation(); }
+        else { setStep('input'); setNfcStatus('idle'); Alert.alert('Payment Failed', 'Insufficient balance'); }
+      }, 3500);
+    }
   };
+
+  const navigateToReceipt = useCallback((txId: string, txType: string, txAmount: string, txCurrency: string, counterparty: string, txMethod: string, txNote?: string) => {
+    router.replace({
+      pathname: '/receipt' as any,
+      params: {
+        txId,
+        txType,
+        txAmount,
+        txCurrency,
+        txCounterparty: counterparty,
+        txMethod,
+        txNote: txNote || '',
+        txDate: new Date().toISOString(),
+      },
+    });
+  }, [router]);
 
   const showSuccessAnimation = () => {
     setShowSuccess(true);
@@ -512,9 +592,22 @@ export default function PaymentRequestScreen() {
     
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     
+    const txId = `TXN_${Date.now().toString(36).toUpperCase()}`;
+    setTransactionId(txId);
+    const methodName = selectedMethod === 'nfc' ? 'NFC Pay' : selectedMethod === 'ble' ? 'Nearby Pay' : 'Code Pay';
+    
     setTimeout(() => {
-      router.back();
-    }, 3000);
+      setShowSuccess(false);
+      navigateToReceipt(
+        txId,
+        'sent',
+        amount,
+        selectedCurrency,
+        selectedUser?.name || 'Recipient',
+        methodName,
+        note || undefined,
+      );
+    }, 1500);
   };
 
   const handleCopyCode = async () => {

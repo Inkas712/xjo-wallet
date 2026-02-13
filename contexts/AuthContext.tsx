@@ -225,6 +225,47 @@ export const [AuthProvider, useAuth] = createContextHook(() => {
     }
   }, []);
 
+  const changePasscode = useCallback(async (currentPasscode: string, newPasscode: string): Promise<boolean> => {
+    const storedPC = storedPasscode || state.passcode;
+    if (currentPasscode !== storedPC) {
+      console.log('Change passcode failed: incorrect current passcode');
+      return false;
+    }
+    if (!newPasscode || newPasscode.length !== 6) {
+      console.log('Change passcode failed: invalid new passcode');
+      return false;
+    }
+    try {
+      storedPasscode = newPasscode;
+      await AsyncStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify({
+        passcode: newPasscode,
+        biometricEnabled: state.biometricEnabled,
+      }));
+      setState(prev => ({ ...prev, passcode: newPasscode }));
+      console.log('Passcode changed successfully');
+      return true;
+    } catch (error) {
+      console.error('Error changing passcode:', error);
+      return false;
+    }
+  }, [state.passcode, state.biometricEnabled]);
+
+  const toggleBiometric = useCallback(async (): Promise<boolean> => {
+    const newValue = !state.biometricEnabled;
+    try {
+      await AsyncStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify({
+        passcode: storedPasscode || state.passcode,
+        biometricEnabled: newValue,
+      }));
+      setState(prev => ({ ...prev, biometricEnabled: newValue }));
+      console.log('Biometric toggled to:', newValue);
+      return newValue;
+    } catch (error) {
+      console.error('Error toggling biometric:', error);
+      return state.biometricEnabled;
+    }
+  }, [state.biometricEnabled, state.passcode]);
+
   const hasAccount = state.user !== null;
 
   return {
@@ -237,5 +278,7 @@ export const [AuthProvider, useAuth] = createContextHook(() => {
     loginWithPrivy,
     logout,
     clearAll,
+    changePasscode,
+    toggleBiometric,
   };
 });

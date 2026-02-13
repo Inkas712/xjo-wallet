@@ -40,6 +40,7 @@ import {
 import { useAuth } from '@/contexts/AuthContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useWallet, CURRENCY_INFO } from '@/contexts/WalletContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { mockTransactions } from '@/mocks/transactions';
 import { CryptoCompareAPI } from '@/services/crypto';
 
@@ -57,6 +58,7 @@ export default function HomeScreen() {
   const { user } = useAuth();
   const { colors, isDark } = useTheme();
   const { totalBalanceUsd, balances, getUsdRate, transactions: walletTransactions } = useWallet();
+  const { t } = useLanguage();
   const queryClient = useQueryClient();
   
   const [balanceVisible, setBalanceVisible] = useState(true);
@@ -145,9 +147,9 @@ export default function HomeScreen() {
 
   const getGreeting = () => {
     const hour = new Date().getHours();
-    if (hour < 12) return 'Good morning';
-    if (hour < 18) return 'Good afternoon';
-    return 'Good evening';
+    if (hour < 12) return t('goodMorning');
+    if (hour < 18) return t('goodAfternoon');
+    return t('goodEvening');
   };
 
   const renderMiniChart = () => {
@@ -449,7 +451,7 @@ export default function HomeScreen() {
               <View style={styles.balanceHeader}>
                 <View style={styles.balanceLabel}>
                   <Wallet size={16} color="rgba(255,255,255,0.9)" />
-                  <Text style={styles.balanceLabelText}>Total Balance</Text>
+                  <Text style={styles.balanceLabelText}>{t('totalBalance')}</Text>
                 </View>
                 <TouchableOpacity 
                   onPress={toggleBalanceVisibility}
@@ -506,7 +508,7 @@ export default function HomeScreen() {
                 >
                   <Send size={22} color="#FFFFFF" />
                 </LinearGradient>
-                <Text style={[styles.quickActionLabel, { color: colors.textSecondary }]}>Send</Text>
+                <Text style={[styles.quickActionLabel, { color: colors.textSecondary }]}>{t('send')}</Text>
               </TouchableOpacity>
 
               <TouchableOpacity 
@@ -520,7 +522,7 @@ export default function HomeScreen() {
                 >
                   <Download size={22} color="#FFFFFF" />
                 </LinearGradient>
-                <Text style={[styles.quickActionLabel, { color: colors.textSecondary }]}>Receive</Text>
+                <Text style={[styles.quickActionLabel, { color: colors.textSecondary }]}>{t('receive')}</Text>
               </TouchableOpacity>
 
               <TouchableOpacity 
@@ -534,7 +536,7 @@ export default function HomeScreen() {
                 >
                   <ScanLine size={22} color="#FFFFFF" />
                 </LinearGradient>
-                <Text style={[styles.quickActionLabel, { color: colors.textSecondary }]}>Scan QR</Text>
+                <Text style={[styles.quickActionLabel, { color: colors.textSecondary }]}>{t('scanQR')}</Text>
               </TouchableOpacity>
 
               <TouchableOpacity 
@@ -548,19 +550,19 @@ export default function HomeScreen() {
                 >
                   <Sparkles size={22} color="#FFFFFF" />
                 </LinearGradient>
-                <Text style={[styles.quickActionLabel, { color: colors.textSecondary }]}>Assets</Text>
+                <Text style={[styles.quickActionLabel, { color: colors.textSecondary }]}>{t('assets')}</Text>
               </TouchableOpacity>
             </Animated.View>
           </View>
 
           <View style={styles.assetSection}>
             <View style={styles.sectionHeader}>
-              <Text style={[styles.sectionTitle, { color: colors.text }]}>Bitcoin</Text>
+              <Text style={[styles.sectionTitle, { color: colors.text }]}>{t('bitcoin')}</Text>
               <TouchableOpacity 
                 style={styles.seeAllButton}
                 onPress={() => router.push('/all-assets')}
               >
-                <Text style={[styles.seeAllText, { color: colors.primary }]}>See All</Text>
+                <Text style={[styles.seeAllText, { color: colors.primary }]}>{t('seeAll')}</Text>
                 <ChevronRight size={16} color={colors.primary} />
               </TouchableOpacity>
             </View>
@@ -615,7 +617,7 @@ export default function HomeScreen() {
           {balances.filter(b => b.amount > 0).length > 0 && (
             <View style={styles.holdingsSection}>
               <View style={styles.sectionHeader}>
-                <Text style={[styles.sectionTitle, { color: colors.text }]}>Holdings</Text>
+                <Text style={[styles.sectionTitle, { color: colors.text }]}>{t('holdings')}</Text>
               </View>
               <View style={[styles.holdingsList, { backgroundColor: colors.cardBg, borderColor: colors.cardBorder }]}>
                 {balances.filter(b => b.amount > 0).map((bal, index, arr) => {
@@ -672,8 +674,8 @@ export default function HomeScreen() {
                     <Layers size={22} color="#9945FF" />
                   </View>
                   <View>
-                    <Text style={styles.tokenizationBannerTitle}>Asset Tokenization</Text>
-                    <Text style={styles.tokenizationBannerDesc}>Invest in real estate, stocks, gold & crypto</Text>
+                    <Text style={styles.tokenizationBannerTitle}>{t('assetTokenization')}</Text>
+                    <Text style={styles.tokenizationBannerDesc}>{t('investDescription')}</Text>
                   </View>
                 </View>
                 <View style={styles.tokenizationBannerRight}>
@@ -689,12 +691,12 @@ export default function HomeScreen() {
 
           <View style={styles.transactionsSection}>
             <View style={styles.sectionHeader}>
-              <Text style={[styles.sectionTitle, { color: colors.text }]}>Recent Activity</Text>
+              <Text style={[styles.sectionTitle, { color: colors.text }]}>{t('recentActivity')}</Text>
               <TouchableOpacity 
                 style={styles.seeAllButton}
                 onPress={() => router.push('/transactions')}
               >
-                <Text style={[styles.seeAllText, { color: colors.primary }]}>See All</Text>
+                <Text style={[styles.seeAllText, { color: colors.primary }]}>{t('seeAll')}</Text>
                 <ChevronRight size={16} color={colors.primary} />
               </TouchableOpacity>
             </View>

@@ -1,11 +1,13 @@
 import { Tabs } from "expo-router";
-import { Home, CreditCard, Send, Package, User } from "lucide-react-native";
+import { Home, CreditCard, Send, Package } from "lucide-react-native";
 import React from "react";
 import { Platform, StyleSheet } from "react-native";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function TabLayout() {
   const { colors } = useTheme();
+  const { t } = useLanguage();
 
   return (
     <Tabs
@@ -32,36 +34,35 @@ export default function TabLayout() {
       <Tabs.Screen
         name="home"
         options={{
-          title: "Home",
+          title: t('home'),
           tabBarIcon: ({ color, size }) => <Home size={size} color={color} />,
         }}
       />
       <Tabs.Screen
         name="cards"
         options={{
-          title: "Cards",
+          title: t('cards'),
           tabBarIcon: ({ color, size }) => <CreditCard size={size} color={color} />,
         }}
       />
       <Tabs.Screen
         name="payments"
         options={{
-          title: "Payments",
+          title: t('payments'),
           tabBarIcon: ({ color, size }) => <Send size={size} color={color} />,
         }}
       />
       <Tabs.Screen
         name="products"
         options={{
-          title: "Products",
+          title: t('products'),
           tabBarIcon: ({ color, size }) => <Package size={size} color={color} />,
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
-          title: "Profile",
-          tabBarIcon: ({ color, size }) => <User size={size} color={color} />,
+          href: null,
         }}
       />
     </Tabs>

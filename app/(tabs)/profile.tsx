@@ -7,6 +7,8 @@ import {
   TouchableOpacity,
   Switch,
   Alert,
+  Modal,
+  Platform,
 } from 'react-native';
 import * as Clipboard from 'expo-clipboard';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -29,9 +31,12 @@ import {
   Fingerprint,
   Moon,
   Globe,
+  X,
 } from 'lucide-react-native';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { LANGUAGES, Language } from '@/constants/i18n';
 
 interface SettingItemProps {
   icon: React.ReactNode;
@@ -117,11 +122,13 @@ const settingStyles = StyleSheet.create({
 
 export default function ProfileScreen() {
   const router = useRouter();
-  const { user, logout, clearAll, biometricEnabled } = useAuth();
+  const { user, logout, clearAll, biometricEnabled, toggleBiometric } = useAuth();
   const { colors, isDark, toggleTheme } = useTheme();
+  const { t, language, setLanguage } = useLanguage();
   
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [copiedAddress, setCopiedAddress] = useState(false);
+  const [showLanguagePicker, setShowLanguagePicker] = useState(false);
 
   const settingItemColors = {
     textColor: colors.text,
@@ -133,6 +140,8 @@ export default function ProfileScreen() {
     dangerIconBg: isDark ? 'rgba(248, 113, 113, 0.12)' : 'rgba(255, 59, 48, 0.1)',
   };
 
+  const currentLangInfo = LANGUAGES.find(l => l.code === language);
+
   const handleCopyAddress = async () => {
     if (user?.walletAddress) {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -142,15 +151,48 @@ export default function ProfileScreen() {
     }
   };
 
+  const handleToggleBiometric = async () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    if (Platform.OS !== 'web') {
+      try {
+        const LocalAuth = require('expo-local-authentication');
+        const hasHardware = await LocalAuth.hasHardwareAsync();
+        if (!hasHardware) {
+          Alert.alert(t('biometricLogin'), 'Biometric hardware not available on this device.');
+          return;
+        }
+        const isEnrolled = await LocalAuth.isEnrolledAsync();
+        if (!isEnrolled) {
+          Alert.alert(t('biometricLogin'), 'No biometric data enrolled. Please set up fingerprint/face in your device settings.');
+          return;
+        }
+        const auth = await LocalAuth.authenticateAsync({
+          promptMessage: 'Authenticate to change biometric settings',
+          cancelLabel: t('cancel'),
+        });
+        if (!auth.success) return;
+      } catch (error) {
+        console.log('Local auth check error:', error);
+      }
+    }
+
+    const newValue = await toggleBiometric();
+    if (newValue) {
+      Alert.alert(t('biometricEnabled'), t('biometricEnabledMsg'));
+    } else {
+      Alert.alert(t('biometricDisabled'), t('biometricDisabledMsg'));
+    }
+  };
+
   const handleLogout = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     Alert.alert(
-      'Log Out',
-      'Are you sure you want to log out?',
+      t('logOut'),
+      t('logOutConfirm'),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('cancel'), style: 'cancel' },
         { 
-          text: 'Log Out', 
+          text: t('logOut'), 
           style: 'destructive',
           onPress: () => {
             logout();
@@ -164,12 +206,12 @@ export default function ProfileScreen() {
   const handleDeleteAccount = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
     Alert.alert(
-      'Delete Account',
-      'This will permanently delete your account and all data. This action cannot be undone.',
+      t('deleteAccount'),
+      t('deleteConfirm'),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('cancel'), style: 'cancel' },
         { 
-          text: 'Delete', 
+          text: t('delete'), 
           style: 'destructive',
           onPress: async () => {
             await clearAll();
@@ -204,11 +246,17 @@ export default function ProfileScreen() {
     });
   };
 
+  const handleSelectLanguage = (lang: Language) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setLanguage(lang);
+    setShowLanguagePicker(false);
+  };
+
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <SafeAreaView edges={['top']} style={styles.safeArea}>
         <View style={styles.header}>
-          <Text style={[styles.headerTitle, { color: colors.text }]}>Profile</Text>
+          <Text style={[styles.headerTitle, { color: colors.text }]}>{t('profile')}</Text>
         </View>
 
         <ScrollView
@@ -224,23 +272,23 @@ export default function ProfileScreen() {
               <Text style={styles.avatarText}>{getInitials()}</Text>
             </LinearGradient>
             <Text style={[styles.userName, { color: colors.text }]}>{user?.fullName || 'User'}</Text>
-            <Text style={[styles.memberSince, { color: colors.textSecondary }]}>Member since {getMemberSince()}</Text>
+            <Text style={[styles.memberSince, { color: colors.textSecondary }]}>{t('memberSince')} {getMemberSince()}</Text>
             
             {user?.provider && (
               <View style={[styles.providerBadge, { backgroundColor: colors.backgroundSecondary, borderColor: colors.border }]}>
                 <Text style={[styles.providerBadgeText, { color: colors.primary }]}>
-                  Connected via {user.provider}
+                  {t('connectedVia')} {user.provider}
                 </Text>
               </View>
             )}
           </View>
 
           <View style={styles.section}>
-            <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>Account Information</Text>
+            <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>{t('accountInfo')}</Text>
             <View style={[styles.sectionCard, { backgroundColor: colors.cardBg, borderColor: colors.cardBorder }]}>
               <SettingItem
                 icon={<Mail size={20} color={colors.primary} />}
-                title="Email"
+                title={t('email')}
                 subtitle={user?.email || 'Not provided'}
                 showArrow={false}
                 {...settingItemColors}
@@ -249,7 +297,7 @@ export default function ProfileScreen() {
               {user?.phone && (
                 <SettingItem
                   icon={<Phone size={20} color={colors.primary} />}
-                  title="Phone"
+                  title={t('phone')}
                   subtitle={user.phone}
                   showArrow={false}
                   {...settingItemColors}
@@ -259,7 +307,7 @@ export default function ProfileScreen() {
               {user?.walletAddress && (
                 <SettingItem
                   icon={<Wallet size={20} color={colors.primary} />}
-                  title="Wallet Address"
+                  title={t('walletAddress')}
                   subtitle={formatWalletAddress(user.walletAddress)}
                   onPress={handleCopyAddress}
                   rightElement={
@@ -276,12 +324,12 @@ export default function ProfileScreen() {
           </View>
 
           <View style={styles.section}>
-            <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>Preferences</Text>
+            <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>{t('preferences')}</Text>
             <View style={[styles.sectionCard, { backgroundColor: colors.cardBg, borderColor: colors.cardBorder }]}>
               <SettingItem
                 icon={<Bell size={20} color={colors.primary} />}
-                title="Push Notifications"
-                subtitle="Receive alerts for transactions"
+                title={t('pushNotifications')}
+                subtitle={t('receiveAlerts')}
                 showArrow={false}
                 rightElement={
                   <Switch
@@ -302,8 +350,8 @@ export default function ProfileScreen() {
               
               <SettingItem
                 icon={<Moon size={20} color={colors.primary} />}
-                title="Dark Mode"
-                subtitle={isDark ? "Dark theme active" : "Light theme active"}
+                title={t('darkMode')}
+                subtitle={isDark ? t('darkThemeActive') : t('lightThemeActive')}
                 showArrow={false}
                 rightElement={
                   <Switch
@@ -324,75 +372,80 @@ export default function ProfileScreen() {
 
               <SettingItem
                 icon={<Globe size={20} color={colors.primary} />}
-                title="Language"
-                subtitle="English"
-                onPress={() => {}}
+                title={t('language')}
+                subtitle={currentLangInfo?.nativeName || 'English'}
+                onPress={() => setShowLanguagePicker(true)}
                 {...settingItemColors}
               />
             </View>
           </View>
 
           <View style={styles.section}>
-            <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>Security</Text>
+            <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>{t('security')}</Text>
             <View style={[styles.sectionCard, { backgroundColor: colors.cardBg, borderColor: colors.cardBorder }]}>
               <SettingItem
                 icon={<Lock size={20} color={colors.primary} />}
-                title="Change Passcode"
-                subtitle="Update your 6-digit PIN"
-                onPress={() => {}}
+                title={t('changePasscode')}
+                subtitle={t('updatePin')}
+                onPress={() => router.push('/change-passcode' as any)}
                 {...settingItemColors}
               />
               
               <SettingItem
                 icon={<Fingerprint size={20} color={colors.primary} />}
-                title="Biometric Login"
-                subtitle={biometricEnabled ? 'Enabled' : 'Disabled'}
+                title={t('biometricLogin')}
+                subtitle={biometricEnabled ? t('enabled') : t('disabled')}
+                onPress={handleToggleBiometric}
                 showArrow={false}
                 rightElement={
-                  <View style={[
-                    styles.statusBadge,
-                    { backgroundColor: biometricEnabled 
-                      ? (isDark ? 'rgba(184, 212, 168, 0.25)' : 'rgba(52, 199, 89, 0.12)') 
-                      : colors.borderLight 
-                    }
-                  ]}>
-                    <Text style={[
-                      styles.statusText,
-                      { color: biometricEnabled ? colors.success : colors.textMuted }
-                    ]}>
-                      {biometricEnabled ? 'On' : 'Off'}
-                    </Text>
-                  </View>
+                  <Switch
+                    value={biometricEnabled}
+                    onValueChange={handleToggleBiometric}
+                    trackColor={{ 
+                      false: colors.borderLight, 
+                      true: colors.primary 
+                    }}
+                    thumbColor="#FFFFFF"
+                  />
                 }
                 {...settingItemColors}
               />
 
               <SettingItem
                 icon={<Shield size={20} color={colors.primary} />}
-                title="Two-Factor Authentication"
-                subtitle="Add extra security"
-                onPress={() => {}}
+                title={t('twoFactor')}
+                subtitle={t('addExtraSecurity')}
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  Alert.alert(t('twoFactor'), 'Coming soon!');
+                }}
                 {...settingItemColors}
               />
             </View>
           </View>
 
           <View style={styles.section}>
-            <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>Support</Text>
+            <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>{t('support')}</Text>
             <View style={[styles.sectionCard, { backgroundColor: colors.cardBg, borderColor: colors.cardBorder }]}>
               <SettingItem
                 icon={<HelpCircle size={20} color={colors.primary} />}
-                title="Help Center"
-                subtitle="FAQs and support"
-                onPress={() => {}}
+                title={t('helpCenter')}
+                subtitle={t('faqAndSupport')}
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  Alert.alert(t('helpCenter'), 'Coming soon!');
+                }}
                 {...settingItemColors}
               />
               
               <SettingItem
                 icon={<FileText size={20} color={colors.primary} />}
-                title="Terms & Privacy"
-                subtitle="Legal information"
-                onPress={() => {}}
+                title={t('termsPrivacy')}
+                subtitle={t('legalInfo')}
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  Alert.alert(t('termsPrivacy'), 'Coming soon!');
+                }}
                 {...settingItemColors}
               />
             </View>
@@ -402,7 +455,7 @@ export default function ProfileScreen() {
             <View style={[styles.sectionCard, { backgroundColor: colors.cardBg, borderColor: colors.cardBorder }]}>
               <SettingItem
                 icon={<LogOut size={20} color={colors.error} />}
-                title="Log Out"
+                title={t('logOut')}
                 onPress={handleLogout}
                 danger
                 showArrow={false}
@@ -415,14 +468,46 @@ export default function ProfileScreen() {
             style={styles.deleteButton}
             onPress={handleDeleteAccount}
           >
-            <Text style={[styles.deleteButtonText, { color: colors.error }]}>Delete Account</Text>
+            <Text style={[styles.deleteButtonText, { color: colors.error }]}>{t('deleteAccount')}</Text>
           </TouchableOpacity>
 
-          <Text style={[styles.versionText, { color: colors.textMuted }]}>Version 1.0.0</Text>
+          <Text style={[styles.versionText, { color: colors.textMuted }]}>{t('version')} 1.0.0</Text>
 
           <View style={styles.bottomSpacer} />
         </ScrollView>
       </SafeAreaView>
+
+      <Modal visible={showLanguagePicker} transparent animationType="slide">
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalContent, { backgroundColor: colors.card }]}>
+            <View style={styles.modalHeader}>
+              <Text style={[styles.modalTitle, { color: colors.text }]}>{t('selectLanguage')}</Text>
+              <TouchableOpacity onPress={() => setShowLanguagePicker(false)}>
+                <X size={24} color={colors.textSecondary} />
+              </TouchableOpacity>
+            </View>
+            {LANGUAGES.map((lang) => (
+              <TouchableOpacity
+                key={lang.code}
+                style={[
+                  styles.languageOption,
+                  { borderBottomColor: colors.borderLight },
+                  language === lang.code && { backgroundColor: isDark ? 'rgba(157,193,131,0.12)' : 'rgba(107,142,78,0.08)' },
+                ]}
+                onPress={() => handleSelectLanguage(lang.code)}
+              >
+                <View style={styles.languageInfo}>
+                  <Text style={[styles.languageName, { color: colors.text }]}>{lang.nativeName}</Text>
+                  <Text style={[styles.languageEnglish, { color: colors.textMuted }]}>{lang.name}</Text>
+                </View>
+                {language === lang.code && (
+                  <Check size={20} color={colors.primary} />
+                )}
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -506,15 +591,6 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     borderWidth: 1,
   },
-  statusBadge: {
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    borderRadius: 12,
-  },
-  statusText: {
-    fontSize: 12,
-    fontWeight: '600' as const,
-  },
   deleteButton: {
     alignItems: 'center',
     paddingVertical: 16,
@@ -532,5 +608,46 @@ const styles = StyleSheet.create({
   },
   bottomSpacer: {
     height: 24,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    paddingBottom: 40,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255,255,255,0.08)',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: '700' as const,
+  },
+  languageOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    borderBottomWidth: 1,
+  },
+  languageInfo: {
+    flex: 1,
+  },
+  languageName: {
+    fontSize: 16,
+    fontWeight: '600' as const,
+    marginBottom: 2,
+  },
+  languageEnglish: {
+    fontSize: 13,
   },
 });
