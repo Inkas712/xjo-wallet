@@ -1,5 +1,5 @@
 import { Tabs } from "expo-router";
-import { Home, CreditCard, Send, Package } from "lucide-react-native";
+import { Home, CreditCard, Send, Package, Coins } from "lucide-react-native";
 import React from "react";
 import { Platform, StyleSheet } from "react-native";
 import { useTheme } from "@/contexts/ThemeContext";
@@ -62,7 +62,8 @@ export default function TabLayout() {
       <Tabs.Screen
         name="profile"
         options={{
-          href: null,
+          title: t('tokenization') || 'Tokenize',
+          tabBarIcon: ({ color, size }) => <Coins size={size} color={color} />,
         }}
       />
     </Tabs>
